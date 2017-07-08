@@ -1,0 +1,2 @@
+#define BCFTOOLS_VERSION "1.4"
+#define HTS_VERSION "1.4"
