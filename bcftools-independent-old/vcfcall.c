@@ -653,7 +653,7 @@ static void usage(args_t *args)
     exit(-1);
 }
 
-int main_vcfcall(int argc, char *argv[])
+int main_vcfcall(int argc, char *argv[], char* mpileupFilename )
 {
     char *ploidy_fname = NULL, *ploidy = NULL;
     args_t args;

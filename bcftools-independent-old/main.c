@@ -16,7 +16,7 @@
 #include "bcftools.h"
 
 
-int bam_mpileup(int argc, char *argv[]);
+int bam_mpileup(int argc, char *argv[], char* refname, char* reffile, char* genomefile, char* outfile);
 
 typedef struct
 {
@@ -45,7 +45,7 @@ int main()
                   "mpileup1.vcf"    // Output File
                   };  
 
-  bam_mpileup(argc - 1, argv + 1);  
+  bam_mpileup(argc - 1, argv + 1, "mpileup.ref.fa", "mpileup.ref.fa", "mpileup1.sam", "mpileup1.tmp") ;  
 
   char* argvx[] = {"bcftools", 
                   "call", 
@@ -53,7 +53,7 @@ int main()
                   "mpileup1.tmp"   // Input Sam file used for variant cal   // Output File
                   };  
 
-  main_vcfcall(3, argvx + 1);
+  main_vcfcall(3, argvx + 1, "mpileup1.tmp");
   return 0;
 }
 #endif

@@ -716,7 +716,7 @@ int parse_format_flag(const char *str)
     return flag;
 }
 
-int bam_mpileup(int argc, char *argv[])
+int bam_mpileup(int argc, char *argv[], char* refname, char* reffile, char* genomefile, char* outfile)
 {
     //int c;
     const char *file_list = NULL;
@@ -739,10 +739,10 @@ int bam_mpileup(int argc, char *argv[])
     mplp.bsmpl = bam_smpl_init();
     
     // FIle Handling
-    mplp.fai = fai_load("mpileup.ref.fa");
+    mplp.fai = fai_load(reffile);
     if (mplp.fai == NULL) return 1;
-    mplp.fai_fname = "mpileup.ref.fa";
-    mplp.output_fname = "mpileup1.tmp";
+    mplp.fai_fname = refname;
+    mplp.output_fname = outfile;
     
 
     //if ( mplp.gvcf && !(mplp.fmt_flag&B2B_FMT_DP) )
@@ -791,7 +791,7 @@ int bam_mpileup(int argc, char *argv[])
         //File Reader
         mplp.nfiles = 1;
         mplp.files  = (char**) malloc(mplp.nfiles*sizeof(char*));
-        const char* __samFile__ = "mpileup1.sam";
+        const char* __samFile__ = genomefile;
         mplp.files[0] = malloc(strlen(__samFile__)+1);
         strcpy(mplp.files[0], __samFile__);
         //mplp.files = "mpileup1.sam";
