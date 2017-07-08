@@ -1,0 +1,36 @@
+/*FILENAME    : App.config.txt
+ DESCRIPTION  : This is a configuration file used by ISV-APP.cpp
+ FUNCTIONALITY: User can change the configurable fields from here
+*/
+
+/* URL of the service provider to which client connects
+(default = http://localhost:25711/)
+ */
+SPUri:http://localhost:25711/
+
+
+/*
+a flag indicating whether the app/enclave uses Platform Services
+If true, it means Platform services are used.
+If false, platform services are not used.
+NOTE: This program will not process secrets if PSE = false.
+(default = true)
+*/
+b_pseFlag:false
+
+/*
+A flag indicating about the verbose option
+If true, all the verbose messages are printed on the console
+If false, only high level messages are printed on the console
+(default = false)
+*/
+verboseFlag:true
+
+/*
+A flag indicating whether to create an enclave at program start,
+and keep it in resident in memory instead of destroying after every request.
+If false, enclaves will be created (and destroyed) only when accessed. 
+(default = false)
+*/
+keepEnclave:false
+

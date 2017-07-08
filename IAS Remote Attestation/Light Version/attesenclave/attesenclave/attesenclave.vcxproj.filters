@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{45591a3a-adc9-437b-a999-0d49a2b35e8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{bd61a16a-9884-4151-bc16-50e799b220b4}</UniqueIdentifier>
+      <Extensions>cpp;c;edl;def; .. and other options</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{60e3b82a-c126-4d3c-b238-438519612fb0}</UniqueIdentifier>
+      <Extensions>h;hpp; .. and other options</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{6fd91035-bf75-4914-ab71-601a7c6f17ca}</UniqueIdentifier>
+      <Extensions>rc;xml;pem; .. and other options</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="attesenclave_t.c">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="attesenclave.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="attesenclave_t.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="attesenclave.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="attesenclave_private.pem">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="attesenclave.config.xml">
+      <Filter>Resource Files</Filter>
+    </Xml>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="attesenclave.edl">
+      <Filter>Source Files</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>

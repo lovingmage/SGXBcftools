@@ -1,0 +1,20 @@
+//  Copyright (C) Intel Corporation, 2007 - 2009 All Rights Reserved.
+
+{ "EnclaveType": [
+   {
+      "Name":"SGX client",
+      "MRSIGNER":"E612B0099ABFE00F14A659263509014C1DEBA0CA4DE98913969AEFA8C268D2CE",
+      "ISVPRODID":"0",
+      "MRENCLAVE":"",
+      "ISVSVNMinLevel":"0",
+      "LeaseDuration":"0",
+      "LeaseDurationTimeUnit": "seconds",
+      "TrustEnclaveGroupOutOfDate":"False",
+      "TrustPSEOutOfDate":"False",
+      "IsProductionEnclave":"False",
+	  "Payload": {
+		"Encrypt":"Random",
+		"Clear":"Random"
+	   }
+   }
+] }

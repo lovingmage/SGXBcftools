@@ -1,0 +1,16 @@
+enclave {
+    include "sgx_report.h"
+	include "sgx_utils.h"
+
+
+    trusted {
+        public sgx_status_t createReport([in] const sgx_target_info_t *target_info,
+										 [in] const sgx_report_data_t *report_data,
+										 [out] sgx_report_t *report);
+    };
+
+    untrusted {
+        /* define OCALLs here. */
+    
+    };
+};

@@ -1,0 +1,14 @@
+enclave {
+    trusted {
+		/* add secret to sealed file */
+		public void add_secret(int secret);
+		public void print_secrets();
+		public void test_encryption();
+		public void set_key([in, size=128] uint8_t *key);
+    };
+
+	from "../sgx_lib_t/sgx_lib.edl" import *;
+    untrusted {
+
+	};
+};

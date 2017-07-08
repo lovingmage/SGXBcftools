@@ -1,0 +1,33 @@
+//  Copyright (C) Intel Corporation, 2007 - 2009 All Rights Reserved.
+enclave {
+	from "sgx_tkey_exchange.edl" import *;
+    include "sgx_key_exchange.h"
+  	include "sgx_tseal.h"
+	
+    trusted {
+        /* define ECALLs here. */
+		public sgx_status_t enclave_init_ra(int b_pse,
+                                            [out] sgx_ra_context_t *p_context);
+		public sgx_status_t process_RA_status(sgx_ra_context_t context,  
+											[in,count=4]uint8_t* attestationStatus,
+											[in,count=16]uint8_t* cmacStatus,
+                                            [in,count=payLen]uint8_t* p_payload,
+                                            int payLen,
+                                            int cryptLen,
+											[in,count=28]uint8_t* p_iv,
+											[out,count=632]uint8_t* sealedSecret);
+        public sgx_status_t unsealSecret([in,count=632]uint8_t* sealedSecret);
+        public sgx_status_t encryptWithSecretKey(uint32_t length,
+											[in,count=length]uint8_t* clear,
+											[out,count=length]uint8_t* crypt,
+											[out,count=16]uint8_t* crypt_mac,
+											[in,count=12]uint8_t* iv);
+        public sgx_status_t decryptWithSecretKey(uint32_t length,
+											[out,count=length]uint8_t* clear,
+											[in,count=length]uint8_t* crypt,
+											[in,count=16]uint8_t* crypt_mac,
+											[in,count=12]uint8_t* iv);
+		
+    };
+  
+};

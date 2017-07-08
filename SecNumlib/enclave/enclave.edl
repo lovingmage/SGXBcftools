@@ -1,0 +1,19 @@
+enclave {
+    trusted {
+		/* Test and Debug Files */
+		public void add_secret(int secret);
+		public void print_secrets();
+		public void test_encryption();
+		public void dump_out([user_check] void* outbuffer);
+		public void print_buffer([user_check] void* buffer);
+		public void set_key([user_check] uint8_t *key);
+
+		/* Standard SecNumlib ECALL Functions */ 
+		
+    };
+
+	from "../sgx-lib/sgx_lib_t/sgx_lib.edl" import *;
+    untrusted {
+
+	};
+};

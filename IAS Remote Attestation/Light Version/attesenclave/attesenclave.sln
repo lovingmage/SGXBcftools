@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "attesenclave", "attesenclave\attesenclave.vcxproj", "{2B4762FB-52B8-40B3-960E-C0E6B1A501C5}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "attesapp", "attesapp\attesapp.vcxproj", "{0ECED302-1629-4D32-9D56-855D1C1275EA}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "b64encoder", "b64encoder\b64encoder.vcxproj", "{0AF8C09A-9C46-444E-9227-B9A62BD23569}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Prerelease|Win32 = Prerelease|Win32
+		Release|Win32 = Release|Win32
+		Simulation|Win32 = Simulation|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2B4762FB-52B8-40B3-960E-C0E6B1A501C5}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2B4762FB-52B8-40B3-960E-C0E6B1A501C5}.Debug|Win32.Build.0 = Debug|Win32
+		{2B4762FB-52B8-40B3-960E-C0E6B1A501C5}.Prerelease|Win32.ActiveCfg = Prerelease|Win32
+		{2B4762FB-52B8-40B3-960E-C0E6B1A501C5}.Prerelease|Win32.Build.0 = Prerelease|Win32
+		{2B4762FB-52B8-40B3-960E-C0E6B1A501C5}.Release|Win32.ActiveCfg = Release|Win32
+		{2B4762FB-52B8-40B3-960E-C0E6B1A501C5}.Release|Win32.Build.0 = Release|Win32
+		{2B4762FB-52B8-40B3-960E-C0E6B1A501C5}.Simulation|Win32.ActiveCfg = Simulation|Win32
+		{2B4762FB-52B8-40B3-960E-C0E6B1A501C5}.Simulation|Win32.Build.0 = Simulation|Win32
+		{0ECED302-1629-4D32-9D56-855D1C1275EA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0ECED302-1629-4D32-9D56-855D1C1275EA}.Debug|Win32.Build.0 = Debug|Win32
+		{0ECED302-1629-4D32-9D56-855D1C1275EA}.Prerelease|Win32.ActiveCfg = Prerelease|Win32
+		{0ECED302-1629-4D32-9D56-855D1C1275EA}.Prerelease|Win32.Build.0 = Prerelease|Win32
+		{0ECED302-1629-4D32-9D56-855D1C1275EA}.Release|Win32.ActiveCfg = Release|Win32
+		{0ECED302-1629-4D32-9D56-855D1C1275EA}.Release|Win32.Build.0 = Release|Win32
+		{0ECED302-1629-4D32-9D56-855D1C1275EA}.Simulation|Win32.ActiveCfg = Simulation|Win32
+		{0ECED302-1629-4D32-9D56-855D1C1275EA}.Simulation|Win32.Build.0 = Simulation|Win32
+		{0AF8C09A-9C46-444E-9227-B9A62BD23569}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0AF8C09A-9C46-444E-9227-B9A62BD23569}.Debug|Win32.Build.0 = Debug|Win32
+		{0AF8C09A-9C46-444E-9227-B9A62BD23569}.Prerelease|Win32.ActiveCfg = Release|Win32
+		{0AF8C09A-9C46-444E-9227-B9A62BD23569}.Prerelease|Win32.Build.0 = Release|Win32
+		{0AF8C09A-9C46-444E-9227-B9A62BD23569}.Release|Win32.ActiveCfg = Release|Win32
+		{0AF8C09A-9C46-444E-9227-B9A62BD23569}.Release|Win32.Build.0 = Release|Win32
+		{0AF8C09A-9C46-444E-9227-B9A62BD23569}.Simulation|Win32.ActiveCfg = Release|Win32
+		{0AF8C09A-9C46-444E-9227-B9A62BD23569}.Simulation|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
