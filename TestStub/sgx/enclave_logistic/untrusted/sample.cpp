@@ -104,6 +104,8 @@ static sgx_errlist_t sgx_errlist[] = {
     },
 };
 
+
+
 /* Check error conditions for loading enclave */
 void print_error_message(sgx_status_t ret)
 {
@@ -204,6 +206,26 @@ void ocall_logistic_sample(const char *str)
     printf("%s", str);
 }
 
+
+int ocall_open(const char* filename, int mode) {
+    return open(filename, mode, 0666);
+}
+
+int ocall_read(int file, void *buf, unsigned int size) {
+    return read(file, buf, size);
+}
+
+int ocall_write(int file, void *buf, unsigned int size) {
+    return write(file, buf, size);
+}
+
+int ocall_close(int file) {
+    return close(file);
+}
+
+int ocall_fsync(int file){
+	return fsync(file);
+}
 
 /* Application entry */
 int SGX_CDECL main(int argc, char *argv[])

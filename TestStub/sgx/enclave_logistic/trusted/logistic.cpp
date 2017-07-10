@@ -8,6 +8,38 @@
  * printf: 
  *   Invokes OCALL to display the enclave buffer to the terminal.
  */
+
+int open(const char* filename, int mode) {
+    int ret;
+    if (ocall_open(&ret, filename, mode) != SGX_SUCCESS) return -1;
+    return ret;
+}
+
+int read(int file, void *buf, unsigned int size) {
+    int ret;
+    if (ocall_read(&ret, file, buf, size) != SGX_SUCCESS) return -1;
+    return ret;
+}
+
+int write(int file, void *buf, unsigned int size) {
+    int ret;
+    if (ocall_write(&ret, file, buf, size) != SGX_SUCCESS) return -1;
+    return ret;
+}
+
+int close(int file) {
+	int ret;
+    ocall_close(&ret, file);
+    return ret;
+}
+
+int fsync(int file)
+{
+	int ret;
+	ocall_fsync(&ret, file);
+	return ret;
+}
+
 void printf(const char *fmt, ...)
 {
     char buf[BUFSIZ] = {'\0'};

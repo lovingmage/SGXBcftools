@@ -17,6 +17,11 @@ extern "C" {
 #endif
 
 void SGX_UBRIDGE(SGX_NOCONVENTION, ocall_logistic_sample, (const char* str));
+int SGX_UBRIDGE(SGX_NOCONVENTION, ocall_open, (const char* filename, int mode));
+int SGX_UBRIDGE(SGX_NOCONVENTION, ocall_read, (int file, void* buf, unsigned int size));
+int SGX_UBRIDGE(SGX_NOCONVENTION, ocall_write, (int file, void* buf, unsigned int size));
+int SGX_UBRIDGE(SGX_NOCONVENTION, ocall_close, (int file));
+int SGX_UBRIDGE(SGX_NOCONVENTION, ocall_fsync, (int file));
 
 sgx_status_t ecall_logistic_sample(sgx_enclave_id_t eid, int* retval);
 

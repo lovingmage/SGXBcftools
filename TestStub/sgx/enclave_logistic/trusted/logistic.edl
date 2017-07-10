@@ -9,6 +9,11 @@ enclave {
      */
     untrusted {
         void ocall_logistic_sample([in, string] const char *str);
+        int ocall_open([in, string] const char* filename, int mode);
+        int ocall_read(int file, [out, size=size] void *buf, unsigned int size);
+        int ocall_write(int file, [in, size=size] void *buf, unsigned int size);
+        int ocall_close(int file);
+        int ocall_fsync(int file);
     };
 
 
