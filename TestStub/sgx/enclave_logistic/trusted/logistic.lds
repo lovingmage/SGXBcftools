@@ -1,0 +1,9 @@
+logistic.so
+{
+    global:
+        g_global_data_sim;
+        g_global_data;
+        logistic_entry;
+    local:
+        *;
+};
