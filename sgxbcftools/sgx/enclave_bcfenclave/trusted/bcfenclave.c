@@ -49,7 +49,7 @@ int ecall_bcfenclave_sample()
                     "mpileup1.vcf"    // Output File
                     };
 
-  bam_mpileup(argc - 1, argv + 1);
+  bam_mpileup(argc - 1, argv + 1, "mpileup.ref.fa", "mpileup.ref.fa", "mpileup1.sam", "mpileup1.tmp") ;  
 
   char* argvx[] = {"bcftools", 
                   "call", 
