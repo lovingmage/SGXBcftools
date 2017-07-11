@@ -662,7 +662,7 @@ static void usage(args_t *args)
     return -1;
 }
 
-int main_vcfcall(int argc, char *argv[])
+int main_vcfcall(int argc, char *argv[], char* mpileupFilename)
 {
     char *ploidy_fname = NULL, *ploidy = NULL;
     args_t args;
@@ -791,7 +791,7 @@ int main_vcfcall(int argc, char *argv[])
     args.aux.flag |= CALL_VARONLY;
     args.flag |= CF_MCALL;
     //Set up the output file
-    args.output_fname = "mpileup1.call.vcf";
+    args.output_fname = "variant_call_result.vcf";
     
     // Sanity check options and initialize
     if ( ploidy_fname ) args.ploidy = ploidy_init(ploidy_fname, 2);
@@ -805,7 +805,7 @@ int main_vcfcall(int argc, char *argv[])
         else usage(&args);
     }*/
 
-    else args.bcf_fname = "mpileup1.tmp";
+    else args.bcf_fname = mpileupFilename;
 
     if ( !ploidy_fname && !ploidy )
     {

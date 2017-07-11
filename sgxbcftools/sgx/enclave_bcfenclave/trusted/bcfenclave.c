@@ -36,7 +36,8 @@ char *sgxstrdup(const char *s)
     return memcpy(mem, s, len);
 }
 
-int ecall_bcfenclave_sample()
+//---------------< Ecall To Make Actual Variant Calls >-----------------------------------
+int ecall_bcfenclave_sample(char* refname, char* reffile, char* genomefile, char* outfile)
 {
   printf("IN BCFENCLAVE\n");
   int argc = 7;
@@ -46,10 +47,11 @@ int ecall_bcfenclave_sample()
                     "mpileup.ref.fa", // reference file
                     "mpileup1.sam",   // Input Sam file used for variant call
                     "-o",             // Default paramater
-                    "mpileup1.vcf"    // Output File
+                    "mpileup1.tmp"    // Output File
                     };
 
-  bam_mpileup(argc - 1, argv + 1, "mpileup.ref.fa", "mpileup.ref.fa", "mpileup1.sam", "mpileup1.tmp") ;  
+  //bam_mpileup(argc - 1, argv + 1, "mpileup.ref.fa", "mpileup.ref.fa", "mpileup1.sam", "mpileup1.tmp") ;  
+  bam_mpileup(argc - 1, argv + 1, refname, reffile, genomefile, outfile) ;  
 
   char* argvx[] = {"bcftools", 
                   "call", 
@@ -57,7 +59,7 @@ int ecall_bcfenclave_sample()
                   "mpileup1.tmp"   // Input Sam file used for variant cal   // Output File
                   };  
 
-  main_vcfcall(3, argvx + 1);
+  main_vcfcall(3, argvx + 1, outfile);
   
   return 0;
 

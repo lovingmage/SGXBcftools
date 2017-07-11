@@ -16,7 +16,7 @@ extern "C" {
 #endif
 
 
-int ecall_bcfenclave_sample();
+int ecall_bcfenclave_sample(char* refname, char* reffile, char* genomefile, char* outfile);
 
 sgx_status_t SGX_CDECL ocall_bcfenclave_sample(const char* str);
 sgx_status_t SGX_CDECL ocall_hfile_oflags(int* retval, const char* mode);
@@ -26,6 +26,7 @@ sgx_status_t SGX_CDECL ocall_write(int* retval, int file, void* buf, unsigned in
 sgx_status_t SGX_CDECL ocall_close(int* retval, int file);
 sgx_status_t SGX_CDECL ocall_fsync(int* retval, int file);
 sgx_status_t SGX_CDECL print_ocall(char* message);
+sgx_status_t SGX_CDECL ocall_readmem(int* retval, void* file, void* buf, unsigned int size);
 
 #ifdef __cplusplus
 }

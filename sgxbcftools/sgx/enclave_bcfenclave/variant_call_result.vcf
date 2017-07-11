@@ -1,7 +1,7 @@
 ##fileformat=VCFv4.2
 ##FILTER=<ID=PASS,Description="All filters passed">
 ##bcftoolsVersion=1.4+htslib-1.4
-##bcftoolsCommand=mpileup -f mpileup.ref.fa mpileup1.sam -o mpileup1.vcf
+##bcftoolsCommand=mpileup -f mpileup.ref.fa mpileup1.sam -o mpileup1.tmp
 ##reference=file://mpileup.ref.fa
 ##contig=<ID=17,length=4200>
 ##ALT=<ID=*,Description="Represents allele(s) other than observed.">

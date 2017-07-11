@@ -3,6 +3,10 @@
 
 typedef struct ms_ecall_bcfenclave_sample_t {
 	int ms_retval;
+	char* ms_refname;
+	char* ms_reffile;
+	char* ms_genomefile;
+	char* ms_outfile;
 } ms_ecall_bcfenclave_sample_t;
 
 typedef struct ms_ocall_bcfenclave_sample_t {
@@ -47,6 +51,13 @@ typedef struct ms_ocall_fsync_t {
 typedef struct ms_print_ocall_t {
 	char* ms_message;
 } ms_print_ocall_t;
+
+typedef struct ms_ocall_readmem_t {
+	int ms_retval;
+	void* ms_file;
+	void* ms_buf;
+	unsigned int ms_size;
+} ms_ocall_readmem_t;
 
 static sgx_status_t SGX_CDECL bcfenclave_ocall_bcfenclave_sample(void* pms)
 {
@@ -112,11 +123,19 @@ static sgx_status_t SGX_CDECL bcfenclave_print_ocall(void* pms)
 	return SGX_SUCCESS;
 }
 
+static sgx_status_t SGX_CDECL bcfenclave_ocall_readmem(void* pms)
+{
+	ms_ocall_readmem_t* ms = SGX_CAST(ms_ocall_readmem_t*, pms);
+	ms->ms_retval = ocall_readmem(ms->ms_file, ms->ms_buf, ms->ms_size);
+
+	return SGX_SUCCESS;
+}
+
 static const struct {
 	size_t nr_ocall;
-	void * table[8];
+	void * table[9];
 } ocall_table_bcfenclave = {
-	8,
+	9,
 	{
 		(void*)bcfenclave_ocall_bcfenclave_sample,
 		(void*)bcfenclave_ocall_hfile_oflags,
@@ -126,12 +145,17 @@ static const struct {
 		(void*)bcfenclave_ocall_close,
 		(void*)bcfenclave_ocall_fsync,
 		(void*)bcfenclave_print_ocall,
+		(void*)bcfenclave_ocall_readmem,
 	}
 };
-sgx_status_t ecall_bcfenclave_sample(sgx_enclave_id_t eid, int* retval)
+sgx_status_t ecall_bcfenclave_sample(sgx_enclave_id_t eid, int* retval, char* refname, char* reffile, char* genomefile, char* outfile)
 {
 	sgx_status_t status;
 	ms_ecall_bcfenclave_sample_t ms;
+	ms.ms_refname = refname;
+	ms.ms_reffile = reffile;
+	ms.ms_genomefile = genomefile;
+	ms.ms_outfile = outfile;
 	status = sgx_ecall(eid, 0, &ocall_table_bcfenclave, &ms);
 	if (status == SGX_SUCCESS && retval) *retval = ms.ms_retval;
 	return status;

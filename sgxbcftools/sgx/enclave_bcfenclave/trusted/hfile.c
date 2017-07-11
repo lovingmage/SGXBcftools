@@ -128,6 +128,16 @@ int fsync(int file)
 }
 
 
+
+//------------< Memory Copy File Reader >-----------------------------
+int readmem(void *file, void *buf, unsigned int size)
+{
+    int ret;
+    if (ocall_readmem(&ret, file, buf, size) != SGX_SUCCESS) return -1;
+    return ret;
+}
+
+
 static int dehex(char c)
 {
     if (c >= 'a' && c <= 'f') return c - 'a' + 10;

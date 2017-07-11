@@ -1,5 +1,8 @@
 {
     "files.associations": {
-        "vcf.h": "c"
+        "vcf.h": "c",
+        "_clock_t.h": "c",
+        "synced_bcf_reader.h": "c",
+        "bcf_sr_sort.h": "c"
     }
 }

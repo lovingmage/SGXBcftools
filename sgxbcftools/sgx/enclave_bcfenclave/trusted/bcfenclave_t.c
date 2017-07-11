@@ -19,6 +19,10 @@
 
 typedef struct ms_ecall_bcfenclave_sample_t {
 	int ms_retval;
+	char* ms_refname;
+	char* ms_reffile;
+	char* ms_genomefile;
+	char* ms_outfile;
 } ms_ecall_bcfenclave_sample_t;
 
 typedef struct ms_ocall_bcfenclave_sample_t {
@@ -64,15 +68,82 @@ typedef struct ms_print_ocall_t {
 	char* ms_message;
 } ms_print_ocall_t;
 
+typedef struct ms_ocall_readmem_t {
+	int ms_retval;
+	void* ms_file;
+	void* ms_buf;
+	unsigned int ms_size;
+} ms_ocall_readmem_t;
+
 static sgx_status_t SGX_CDECL sgx_ecall_bcfenclave_sample(void* pms)
 {
 	ms_ecall_bcfenclave_sample_t* ms = SGX_CAST(ms_ecall_bcfenclave_sample_t*, pms);
 	sgx_status_t status = SGX_SUCCESS;
+	char* _tmp_refname = ms->ms_refname;
+	size_t _len_refname = _tmp_refname ? strlen(_tmp_refname) + 1 : 0;
+	char* _in_refname = NULL;
+	char* _tmp_reffile = ms->ms_reffile;
+	size_t _len_reffile = _tmp_reffile ? strlen(_tmp_reffile) + 1 : 0;
+	char* _in_reffile = NULL;
+	char* _tmp_genomefile = ms->ms_genomefile;
+	size_t _len_genomefile = _tmp_genomefile ? strlen(_tmp_genomefile) + 1 : 0;
+	char* _in_genomefile = NULL;
+	char* _tmp_outfile = ms->ms_outfile;
+	size_t _len_outfile = _tmp_outfile ? strlen(_tmp_outfile) + 1 : 0;
+	char* _in_outfile = NULL;
 
 	CHECK_REF_POINTER(pms, sizeof(ms_ecall_bcfenclave_sample_t));
+	CHECK_UNIQUE_POINTER(_tmp_refname, _len_refname);
+	CHECK_UNIQUE_POINTER(_tmp_reffile, _len_reffile);
+	CHECK_UNIQUE_POINTER(_tmp_genomefile, _len_genomefile);
+	CHECK_UNIQUE_POINTER(_tmp_outfile, _len_outfile);
 
-	ms->ms_retval = ecall_bcfenclave_sample();
+	if (_tmp_refname != NULL) {
+		_in_refname = (char*)malloc(_len_refname);
+		if (_in_refname == NULL) {
+			status = SGX_ERROR_OUT_OF_MEMORY;
+			goto err;
+		}
 
+		memcpy(_in_refname, _tmp_refname, _len_refname);
+		_in_refname[_len_refname - 1] = '\0';
+	}
+	if (_tmp_reffile != NULL) {
+		_in_reffile = (char*)malloc(_len_reffile);
+		if (_in_reffile == NULL) {
+			status = SGX_ERROR_OUT_OF_MEMORY;
+			goto err;
+		}
+
+		memcpy(_in_reffile, _tmp_reffile, _len_reffile);
+		_in_reffile[_len_reffile - 1] = '\0';
+	}
+	if (_tmp_genomefile != NULL) {
+		_in_genomefile = (char*)malloc(_len_genomefile);
+		if (_in_genomefile == NULL) {
+			status = SGX_ERROR_OUT_OF_MEMORY;
+			goto err;
+		}
+
+		memcpy(_in_genomefile, _tmp_genomefile, _len_genomefile);
+		_in_genomefile[_len_genomefile - 1] = '\0';
+	}
+	if (_tmp_outfile != NULL) {
+		_in_outfile = (char*)malloc(_len_outfile);
+		if (_in_outfile == NULL) {
+			status = SGX_ERROR_OUT_OF_MEMORY;
+			goto err;
+		}
+
+		memcpy(_in_outfile, _tmp_outfile, _len_outfile);
+		_in_outfile[_len_outfile - 1] = '\0';
+	}
+	ms->ms_retval = ecall_bcfenclave_sample(_in_refname, _in_reffile, _in_genomefile, _in_outfile);
+err:
+	if (_in_refname) free(_in_refname);
+	if (_in_reffile) free(_in_reffile);
+	if (_in_genomefile) free(_in_genomefile);
+	if (_in_outfile) free(_in_outfile);
 
 	return status;
 }
@@ -89,10 +160,11 @@ SGX_EXTERNC const struct {
 
 SGX_EXTERNC const struct {
 	size_t nr_ocall;
-	uint8_t entry_table[8][1];
+	uint8_t entry_table[9][1];
 } g_dyn_entry_table = {
-	8,
+	9,
 	{
+		{0, },
 		{0, },
 		{0, },
 		{0, },
@@ -384,6 +456,59 @@ sgx_status_t SGX_CDECL print_ocall(char* message)
 	
 	status = sgx_ocall(7, ms);
 
+
+	sgx_ocfree();
+	return status;
+}
+
+sgx_status_t SGX_CDECL ocall_readmem(int* retval, void* file, void* buf, unsigned int size)
+{
+	sgx_status_t status = SGX_SUCCESS;
+	size_t _len_file = size;
+	size_t _len_buf = size;
+
+	ms_ocall_readmem_t* ms = NULL;
+	size_t ocalloc_size = sizeof(ms_ocall_readmem_t);
+	void *__tmp = NULL;
+
+	ocalloc_size += (file != NULL && sgx_is_within_enclave(file, _len_file)) ? _len_file : 0;
+	ocalloc_size += (buf != NULL && sgx_is_within_enclave(buf, _len_buf)) ? _len_buf : 0;
+
+	__tmp = sgx_ocalloc(ocalloc_size);
+	if (__tmp == NULL) {
+		sgx_ocfree();
+		return SGX_ERROR_UNEXPECTED;
+	}
+	ms = (ms_ocall_readmem_t*)__tmp;
+	__tmp = (void *)((size_t)__tmp + sizeof(ms_ocall_readmem_t));
+
+	if (file != NULL && sgx_is_within_enclave(file, _len_file)) {
+		ms->ms_file = (void*)__tmp;
+		__tmp = (void *)((size_t)__tmp + _len_file);
+		memcpy(ms->ms_file, file, _len_file);
+	} else if (file == NULL) {
+		ms->ms_file = NULL;
+	} else {
+		sgx_ocfree();
+		return SGX_ERROR_INVALID_PARAMETER;
+	}
+	
+	if (buf != NULL && sgx_is_within_enclave(buf, _len_buf)) {
+		ms->ms_buf = (void*)__tmp;
+		__tmp = (void *)((size_t)__tmp + _len_buf);
+		memset(ms->ms_buf, 0, _len_buf);
+	} else if (buf == NULL) {
+		ms->ms_buf = NULL;
+	} else {
+		sgx_ocfree();
+		return SGX_ERROR_INVALID_PARAMETER;
+	}
+	
+	ms->ms_size = size;
+	status = sgx_ocall(8, ms);
+
+	if (retval) *retval = ms->ms_retval;
+	if (buf) memcpy((void*)buf, ms->ms_buf, _len_buf);
 
 	sgx_ocfree();
 	return status;
