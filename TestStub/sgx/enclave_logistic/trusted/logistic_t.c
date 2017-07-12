@@ -193,7 +193,7 @@ sgx_status_t SGX_CDECL ocall_read(int* retval, int file, void* buf, unsigned int
 	if (buf != NULL && sgx_is_within_enclave(buf, _len_buf)) {
 		ms->ms_buf = (void*)__tmp;
 		__tmp = (void *)((size_t)__tmp + _len_buf);
-		memset(ms->ms_buf, 0, _len_buf);
+		memcpy(ms->ms_buf, buf, _len_buf);
 	} else if (buf == NULL) {
 		ms->ms_buf = NULL;
 	} else {
@@ -205,7 +205,6 @@ sgx_status_t SGX_CDECL ocall_read(int* retval, int file, void* buf, unsigned int
 	status = sgx_ocall(2, ms);
 
 	if (retval) *retval = ms->ms_retval;
-	if (buf) memcpy((void*)buf, ms->ms_buf, _len_buf);
 
 	sgx_ocfree();
 	return status;

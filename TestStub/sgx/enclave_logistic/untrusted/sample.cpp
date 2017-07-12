@@ -206,12 +206,19 @@ void ocall_logistic_sample(const char *str)
     printf("%s", str);
 }
 
+const char* sambuf = "abcdefg";
+const char* reffile = "fsafedadfasfewga";
+const char* indexfile = "ggdage";
+
+
 
 int ocall_open(const char* filename, int mode) {
+
     return open(filename, mode, 0666);
 }
 
 int ocall_read(int file, void *buf, unsigned int size) {
+
     return read(file, buf, size);
 }
 
