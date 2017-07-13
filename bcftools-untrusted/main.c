@@ -101,12 +101,12 @@ int main()
                   "mpileup.ref.fa", // reference file
                   "mpileup1.sam",   // Input Sam file used for variant call
                   "-o",             // Default paramater
-                  "mpileup1.vcf"    // Output File
+                  "mpileup1.tmp"    // Output File
                   };  
 
   bam_mpileup(argc - 1, argv + 1, "mpileup.ref.fa", "mpileup.ref.fa", "mpileup1.sam", "mpileup1.tmp") ;  
-
-  // The parameters are not using in the new version again
+ //bam_mpileup(argc, argv+1);
+ // The parameters are not using in the new version again
   char* argvx[] = {"bcftools", 
                   "call", 
                   "-mv",             // Default paramater

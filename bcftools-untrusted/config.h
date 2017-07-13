@@ -96,7 +96,7 @@
 #define PACKAGE_URL "http://www.htslib.org/"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "1.4"
+#define PACKAGE_VERSION "1.5"
 
 /* Platform-dependent plugin filename extension. */
 /* #undef PLUGIN_EXT */

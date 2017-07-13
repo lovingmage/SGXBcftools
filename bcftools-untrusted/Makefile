@@ -60,6 +60,7 @@ OBJS     = main.o \
            version.o \
            regidx.o \
            mpileup.o bam2bcf.o bam_sample.o bcf_sr_sort.o\
+	bam2bcf_indel.o\
 	kfunc.o \
 	kstring.o \
 	bgzf.o \
