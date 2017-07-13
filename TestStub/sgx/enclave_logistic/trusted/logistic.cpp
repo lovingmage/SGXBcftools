@@ -11,6 +11,7 @@
 
 int open(const char* filename, int mode) {
     int ret;
+    
     if (ocall_open(&ret, filename, mode) != SGX_SUCCESS) return -1;
     return ret;
 }
