@@ -194,6 +194,56 @@ static int fai_save(const faidx_t *fai, hFILE *fp) {
     return 0;
 }
 
+
+//---------------< Util Function Used for String Splitting >-----------
+char** str_split(char* a_str, const char a_delim)
+{
+    char** result    = 0;
+    size_t count     = 0;
+    char* tmp        = a_str;
+    char* last_comma = 0;
+    char delim[2];
+    delim[0] = a_delim;
+    delim[1] = 0;
+
+    /* Count how many elements will be extracted. */
+    while (*tmp)
+    {
+        if (a_delim == *tmp)
+        {
+            count++;
+            last_comma = tmp;
+        }
+        tmp++;
+    }
+
+    /* Add space for trailing token. */
+    count += last_comma < (a_str + strlen(a_str) - 1);
+
+    /* Add space for terminating null string so caller
+       knows where the list of returned strings ends. */
+    count++;
+
+    result = malloc(sizeof(char*) * count);
+
+    if (result)
+    {
+        size_t idx  = 0;
+        char* token = strtok(a_str, delim);
+
+        while (token)
+        {
+            assert(idx < count);
+            *(result + idx++) = strdup(token);
+            token = strtok(0, delim);
+        }
+        assert(idx == count - 1);
+        *(result + idx) = 0;
+    }
+
+    return result;
+}
+
 static faidx_t *fai_read(hFILE *fp, const char *fname)
 {
     faidx_t *fai;
@@ -217,10 +267,18 @@ static faidx_t *fai_read(hFILE *fp, const char *fname)
         *p = 0; ++p;
         //n = sscanf(p, "%d%d%d%d", &len, &offset, &line_blen, &line_len);
 
-        len = 4200;
-        offset = 14;
-        line_blen = 60;
-        line_len = 4;
+        char* parameters = p;
+        printf("Parameters : %s ", parameters);
+        char** tokens;
+        tokens = str_split(parameters, '\t');
+
+        //printf("%d %s %s %s", atoi(tokens[0]), tokens[1], tokens[2], tokens[3]);
+        //n = sscanf(p, "%"SCNd64"%"SCNu64"%d%d", &len, &offset, &line_blen, &line_len);
+
+        len = atoi(tokens[0]);
+        offset = atoi(tokens[1]);
+        line_blen = atoi(tokens[2]);
+        line_len = atoi(tokens[3]);
         n = 4;
 
         if (n != 4) {
