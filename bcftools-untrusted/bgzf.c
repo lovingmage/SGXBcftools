@@ -31,7 +31,7 @@
 #include <errno.h>
 #include <unistd.h>
 #include <assert.h>
-#include <pthread.h>
+//#include <pthread.h>
 //#include <sys/types.h>
 #include <inttypes.h>
 
@@ -213,9 +213,9 @@ static BGZF *bgzf_write_init(const char *mode)
     return fp;
 
  mem_fail:
-    if (hts_verbose >= 1) {
+    /*if (hts_verbose >= 1) {
         fprintf(stderr, "[E::%s] %s\n", __func__, strerror(errno));
-    }
+    }*/
  fail:
     if (fp != NULL) {
         free(fp->uncompressed_block);
@@ -228,7 +228,7 @@ static BGZF *bgzf_write_init(const char *mode)
 BGZF *bgzf_open(const char *path, const char *mode)
 {
     BGZF *fp = 0;
-    assert(compressBound(BGZF_BLOCK_SIZE) < BGZF_MAX_BLOCK_SIZE);
+    //assert(compressBound(BGZF_BLOCK_SIZE) < BGZF_MAX_BLOCK_SIZE);
     if (strchr(mode, 'r')) {
         hFILE *fpr;
         if ((fpr = hopen(path, mode)) == 0) return 0;
@@ -251,7 +251,7 @@ BGZF *bgzf_open(const char *path, const char *mode)
 BGZF *bgzf_dopen(int fd, const char *mode)
 {
     BGZF *fp = 0;
-    assert(compressBound(BGZF_BLOCK_SIZE) < BGZF_MAX_BLOCK_SIZE);
+    //assert(compressBound(BGZF_BLOCK_SIZE) < BGZF_MAX_BLOCK_SIZE);
     if (strchr(mode, 'r')) {
         hFILE *fpr;
         if ((fpr = hdopen(fd, mode)) == 0) return 0;
@@ -274,7 +274,7 @@ BGZF *bgzf_dopen(int fd, const char *mode)
 BGZF *bgzf_hopen(hFILE *hfp, const char *mode)
 {
     BGZF *fp = NULL;
-    assert(compressBound(BGZF_BLOCK_SIZE) < BGZF_MAX_BLOCK_SIZE);
+    //assert(compressBound(BGZF_BLOCK_SIZE) < BGZF_MAX_BLOCK_SIZE);
     if (strchr(mode, 'r')) {
         fp = bgzf_read_init(hfp);
         if (fp == NULL) return NULL;
@@ -525,8 +525,8 @@ static int load_block_from_cache(BGZF *fp, int64_t block_address)
     if ( hseek(fp->fp, p->end_offset, SEEK_SET) < 0 )
     {
         // todo: move the error up
-        fprintf(stderr,"Could not hseek to %"PRId64"\n", p->end_offset);
-        exit(1);
+        //fprintf(stderr,"Could not hseek to %"PRId64"\n", p->end_offset);
+        return -1;
     }
     return p->size;
 }
@@ -634,9 +634,9 @@ int bgzf_read_block(BGZF *fp)
         if (count == 0) { // no data read
             if (!fp->last_block_eof && !fp->no_eof_block && !fp->is_gzip) {
                 fp->no_eof_block = 1;
-                if (hts_verbose > 1) {
+                /*if (hts_verbose > 1) {
                     fprintf(stderr, "[W::%s] EOF marker is absent. The input is probably truncated.\n", __func__);
-                }
+                }*/
             }
             fp->block_length = 0;
             return 0;
@@ -750,9 +750,9 @@ ssize_t bgzf_read(BGZF *fp, void *data, size_t length)
         if (available <= 0) {
             int ret = bgzf_read_block(fp);
             if (ret != 0) {
-                if (hts_verbose >= 2) {
+                /*if (hts_verbose >= 2) {
                     fprintf(stderr, "[E::%s] bgzf_read_block error %d after %zd of %zu bytes\n", __func__, ret, bytes_read, length);
-                }
+                }*/
                 fp->errcode |= BGZF_ERR_ZLIB;
                 return -1;
             }
@@ -804,7 +804,7 @@ int bgzf_flush(BGZF *fp)
             return -1;
         }*/
         if (hwrite(fp->fp, fp->compressed_block, block_length) != block_length) {
-            if (hts_verbose >= 1) fprintf(stderr, "[E::%s] hwrite error (wrong size)\n", __func__);
+            //if (hts_verbose >= 1) fprintf(stderr, "[E::%s] hwrite error (wrong size)\n", __func__);
             fp->errcode |= BGZF_ERR_IO; // possibly truncated file
             return -1;
         }
@@ -892,7 +892,7 @@ int bgzf_close(BGZF* fp)
         }*/
         if (hwrite(fp->fp, fp->compressed_block, block_length) < 0
             || hflush(fp->fp) != 0) {
-            if (hts_verbose >= 1) fprintf(stderr, "[E::%s] file write error\n", __func__);
+            //if (hts_verbose >= 1) fprintf(stderr, "[E::%s] file write error\n", __func__);
             fp->errcode |= BGZF_ERR_IO;
             return -1;
         }
@@ -1107,12 +1107,13 @@ int bgzf_index_dump_hfile(BGZF *fp, struct hFILE *idx, const char *name)
     int i, save_errno;
 
     if (!fp->idx) {
+        /*
         if (hts_verbose > 1) {
             fprintf(stderr, "[E::%s] Called for BGZF handle with no index",
                     __func__);
             errno = EINVAL;
             return -1;
-        }
+        }*/
     }
 
     if (bgzf_flush(fp) != 0) return -1;
@@ -1127,10 +1128,11 @@ int bgzf_index_dump_hfile(BGZF *fp, struct hFILE *idx, const char *name)
 
  fail:
     save_errno = errno;
+    /*
     if (hts_verbose > 1) {
         fprintf(stderr, "[E::%s] Error writing to %s : %s\n",
                 __func__, name ? name : "index", strerror(errno));
-    }
+    }*/
     errno = save_errno;
     return -1;
 }
@@ -1143,12 +1145,13 @@ int bgzf_index_dump(BGZF *fp, const char *bname, const char *suffix)
     int save_errno;
 
     if (!fp->idx) {
+        /*
         if (hts_verbose > 1) {
             fprintf(stderr, "[E::%s] Called for BGZF handle with no index",
                     __func__);
             errno = EINVAL;
             return -1;
-        }
+        }*/
     }
 
     if ( suffix )
@@ -1178,11 +1181,12 @@ int bgzf_index_dump(BGZF *fp, const char *bname, const char *suffix)
 
  fail:
     save_errno = errno;
+    /*
     if (hts_verbose > 1 && msg != NULL)
     {
         fprintf(stderr, "[E::%s] %s %s : %s\n",
                 __func__, msg, name, strerror(errno));
-    }
+    }*/
     if (idx) hclose_abruptly(idx);
     free(tmp);
     errno = save_errno;
@@ -1220,11 +1224,12 @@ int bgzf_index_load_hfile(BGZF *fp, struct hFILE *idx, const char *name)
 
  fail:
     save_errno = errno;
+    /*
     if (hts_verbose > 1)
     {
         fprintf(stderr, "[E::%s] Error reading %s : %s\n",
                 __func__, name ? name : "index", strerror(errno));
-    }
+    }*/
     if (fp->idx) {
         free(fp->idx->offs);
         free(fp->idx);
@@ -1266,10 +1271,11 @@ int bgzf_index_load(BGZF *fp, const char *bname, const char *suffix)
 
  fail:
     save_errno = errno;
+    /*
     if (hts_verbose > 1 && msg != NULL) {
         fprintf(stderr, "[E::%s] %s %s : %s\n",
                 __func__, msg, name, strerror(errno));
-    }
+    }*/
     if (idx) hclose_abruptly(idx);
     free(tmp);
     errno = save_errno;

@@ -35,7 +35,6 @@ DEALINGS IN THE SOFTWARE.  */
 #include "bcfenclave.h"
 
 
-
 typedef struct
 {
     char *fname;
@@ -212,7 +211,6 @@ int bam_smpl_add_bam(bam_smpl_t *bsmpl, char *bam_hdr, const char *fname)
             }
             if ( accept_rg )
             {
-                //printf("%s\n%sr\n", q, r);
             	bsmpl_add_readgroup(bsmpl,file,q,r);
             }
             else

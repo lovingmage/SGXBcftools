@@ -179,10 +179,11 @@ hfile_internal_h = hfile_internal.h $(htslib_hfile_h)
 prob1_h = prob1.h $(htslib_vcf_h) $(call_h)
 ploidy_h = ploidy.h regidx.h
 htslib_synced_bcf_reader_h = htslib/synced_bcf_reader.h $(htslib_hts_h) $(htslib_vcf_h) $(htslib_tbx_h)
-
+#Done, Check
 bcftools_h = bcftools.h $(htslib_hts_defs_h) $(htslib_vcf_h)
 call_h = call.h $(htslib_vcf_l_h) $(htslib_synced_bcf_reader_h) vcmp.h
 bam2bcf_h = bam2bcf.h $(htslib_hts_h) $(htslib_vcf_l_h)
+#Done, Check
 bam_sample_h = bam_sample.h $(htslib_sam_h)
 
 main.o: main.c $(htslib_hts_h) version.h $(bcftools_h)
@@ -194,8 +195,9 @@ vcmp.o: vcmp.c $(htslib_hts_h) vcmp.h
 regidx.o: regidx.c $(htslib_hts_h) $(htslib_kstring_h) $(htslib_kseq_h) $(htslib_khash_str2int_h) regidx.h
 #Done
 mpileup.o: mpileup.c $(htslib_sam_h) $(htslib_faidx_h) $(htslib_kstring_h) $(htslib_khash_str2int_h) regidx.h $(bcftools_h) $(call_h) $(bam2bcf_h) $(bam_sample_h)
-bam_sample.o: $(bam_sample_h) $(htslib_hts_h) $(htslib_khash_str2int_h)
 #Done
+bam_sample.o: $(bam_sample_h) $(htslib_hts_h) $(htslib_khash_str2int_h)
+#Done, Check
 version.o: version.h version.c
 #Done
 bgzf.o bgzf.pico: bgzf.c config.h $(htslib_hts_h) $(htslib_bgzf_h) $(htslib_hfile_h) $(htslib_khash_h)

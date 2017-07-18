@@ -8,6 +8,7 @@
 extern "C" {
 #endif
 
+double drand48();
 void printf(const char *fmt, ...);
 char *strdup(const char *s);
 

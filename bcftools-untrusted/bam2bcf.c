@@ -33,6 +33,8 @@ DEALINGS IN THE SOFTWARE.  */
 #include "htslib/kfunc.h"
 #include "bam2bcf.h"
 
+#define M_PI   	3.14159265358979323846264338327950288
+
 extern  void ks_introsort_uint32_t(size_t n, uint32_t a[]);
 
 #define CALL_DEFTHETA 0.83
@@ -106,7 +108,7 @@ static int get_position(const bam_pileup1_t *p, int *len)
         if ( cig==BAM_CHARD_CLIP ) continue;
         if ( cig==BAM_CPAD ) continue;
         if ( cig==BAM_CREF_SKIP ) continue;
-        fprintf(stderr,"todo: cigar %d\n", cig);
+        printf( "todo: cigar %d\n", cig);
         assert(0);
     }
     *len = n_tot_bases;
@@ -165,7 +167,7 @@ int bcf_call_glfgen(int _n, const bam_pileup1_t *pl, int ref_base, bcf_callaux_t
         bca->bases = (uint16_t*)realloc(bca->bases, 2 * bca->max_bases);
     }
     // fill the bases array
-// fill the bases array
+    // fill the bases array
     for (i = n = 0; i < _n; ++i) {
         const bam_pileup1_t *p = pl + i;
         int q, b, mapQ, baseQ, is_diff, min_dist, seqQ;
@@ -503,7 +505,7 @@ void calc_SegBias(const bcf_callret1_t *bcr, bcf_call_t *call)
     double sum = 0;
     const double log2 = log(2.0);
 
-    // fprintf(stderr,"M=%.1f  p=%e q=%e f=%f  dp=%d\n",M,p,q,f,avg_dp);
+    // printf( "M=%.1f  p=%e q=%e f=%f  dp=%d\n",M,p,q,f,avg_dp);
     int i;
     for (i=0; i<call->n; i++)
     {
@@ -518,7 +520,7 @@ void calc_SegBias(const bcf_callret1_t *bcr, bcf_call_t *call)
         else
             tmp = log(2*f*(1-f)*exp(-q) + f*f*exp(-2*q) + (1-f)*(1-f)) + p;
         sum += tmp;
-        // fprintf(stderr,"oi=%d %e\n", oi,tmp);
+        // printf( "oi=%d %e\n", oi,tmp);
     }
     call->seg_bias = sum;
 }
@@ -682,7 +684,7 @@ int bcf_call_combine(int n, const bcf_callret1_t *calls, bcf_callaux_t *bca, int
             }
         }
 
-//      if (ref_base < 0) fprintf(stderr, "%d,%d,%f,%d\n", call->n_alleles, x, sum_min, call->unseen);
+//      if (ref_base < 0) printf(  "%d,%d,%f,%d\n", call->n_alleles, x, sum_min, call->unseen);
         call->shift = (int)(sum_min + .499);
     }
     // combine annotations

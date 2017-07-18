@@ -333,7 +333,7 @@ static int mpileup_reg(mplp_conf_t *conf, uint32_t beg, uint32_t end)
 
         // call indels; todo: subsampling with total_depth>max_indel_depth instead of ignoring?
         // check me: rghash in bcf_call_gap_prep() should have no effect, reads mplp_func already excludes them
-        /*
+        
         if (!(conf->flag&MPLP_NO_INDEL) && total_depth < conf->max_indel_depth 
             && bcf_call_gap_prep(conf->gplp->n, conf->gplp->n_plp, conf->gplp->plp, pos, conf->bca, ref) >= 0)
         {
@@ -347,7 +347,7 @@ static int mpileup_reg(mplp_conf_t *conf, uint32_t beg, uint32_t end)
                 flush_bcf_records(conf, conf->bcf_fp, conf->bcf_hdr, conf->bcf_rec);
             }
         }
-        */
+        
     }
     return 0;
 }

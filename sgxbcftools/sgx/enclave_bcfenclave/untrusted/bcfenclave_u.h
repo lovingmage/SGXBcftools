@@ -25,6 +25,7 @@ int SGX_UBRIDGE(SGX_NOCONVENTION, ocall_close, (int file));
 int SGX_UBRIDGE(SGX_NOCONVENTION, ocall_fsync, (int file));
 void SGX_UBRIDGE(SGX_NOCONVENTION, print_ocall, (char* message));
 int SGX_UBRIDGE(SGX_NOCONVENTION, ocall_readmem, (void* file, void* buf, unsigned int size));
+double SGX_UBRIDGE(SGX_NOCONVENTION, ocall_drand48, ());
 
 sgx_status_t ecall_bcfenclave_sample(sgx_enclave_id_t eid, int* retval, char* refname, char* reffile, char* genomefile, char* outfile);
 

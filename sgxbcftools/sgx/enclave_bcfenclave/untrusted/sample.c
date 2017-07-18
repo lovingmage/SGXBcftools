@@ -6,6 +6,7 @@
 #include <libgen.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
 
 # define MAX_PATH FILENAME_MAX
 
@@ -260,6 +261,11 @@ int ocall_readmem(void *file, void *buf, unsigned int size){
     return 1;
 }
 
+double ocall_drand48()
+{
+    //printf("Here we hit Drand48().\n");
+    return drand48();
+}
 /* Application entry */
 int SGX_CDECL main(int argc, char *argv[])
 {
@@ -288,7 +294,7 @@ int SGX_CDECL main(int argc, char *argv[])
     sgx_status_t ret = SGX_ERROR_UNEXPECTED;
     int ecall_return = 0;
 
-    ret = ecall_bcfenclave_sample(global_eid, &ecall_return, argv[1], argv[1], argv[2], "tmp.mlp");
+    ret = ecall_bcfenclave_sample(global_eid, &ecall_return, argv[1], argv[1], argv[2], argv[3]);
     if (ret != SGX_SUCCESS)
         abort();
 

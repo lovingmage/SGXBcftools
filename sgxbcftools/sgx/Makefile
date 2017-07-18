@@ -4,6 +4,7 @@ ALL_STATIC_MK=$(shell find . -name '*sgx_t_static.mk')
 
 
 
+
 .PHONY: all clean run
 
 

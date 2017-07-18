@@ -75,6 +75,10 @@ typedef struct ms_ocall_readmem_t {
 	unsigned int ms_size;
 } ms_ocall_readmem_t;
 
+typedef struct ms_ocall_drand48_t {
+	double ms_retval;
+} ms_ocall_drand48_t;
+
 static sgx_status_t SGX_CDECL sgx_ecall_bcfenclave_sample(void* pms)
 {
 	ms_ecall_bcfenclave_sample_t* ms = SGX_CAST(ms_ecall_bcfenclave_sample_t*, pms);
@@ -160,10 +164,11 @@ SGX_EXTERNC const struct {
 
 SGX_EXTERNC const struct {
 	size_t nr_ocall;
-	uint8_t entry_table[9][1];
+	uint8_t entry_table[10][1];
 } g_dyn_entry_table = {
-	9,
+	10,
 	{
+		{0, },
 		{0, },
 		{0, },
 		{0, },
@@ -509,6 +514,31 @@ sgx_status_t SGX_CDECL ocall_readmem(int* retval, void* file, void* buf, unsigne
 
 	if (retval) *retval = ms->ms_retval;
 	if (buf) memcpy((void*)buf, ms->ms_buf, _len_buf);
+
+	sgx_ocfree();
+	return status;
+}
+
+sgx_status_t SGX_CDECL ocall_drand48(double* retval)
+{
+	sgx_status_t status = SGX_SUCCESS;
+
+	ms_ocall_drand48_t* ms = NULL;
+	size_t ocalloc_size = sizeof(ms_ocall_drand48_t);
+	void *__tmp = NULL;
+
+
+	__tmp = sgx_ocalloc(ocalloc_size);
+	if (__tmp == NULL) {
+		sgx_ocfree();
+		return SGX_ERROR_UNEXPECTED;
+	}
+	ms = (ms_ocall_drand48_t*)__tmp;
+	__tmp = (void *)((size_t)__tmp + sizeof(ms_ocall_drand48_t));
+
+	status = sgx_ocall(9, ms);
+
+	if (retval) *retval = ms->ms_retval;
 
 	sgx_ocfree();
 	return status;

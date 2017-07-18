@@ -270,17 +270,17 @@ void debug_vsets(sr_sort_t *srt)
     int i,j,k;
     for (i=0; i<srt->nvset; i++)
     {
-        fprintf(stderr,"dbg_vset %d:", i);
-        for (j=0; j<srt->vset[i].mask->n; j++) fprintf(stderr,"%c%lu",j==0?' ':':',srt->vset[i].mask->b[j]);
-        fprintf(stderr,"\t");
+        printf( "dbg_vset %d:", i);
+        for (j=0; j<srt->vset[i].mask->n; j++) printf( "%c%lu",j==0?' ':':',srt->vset[i].mask->b[j]);
+        printf( "\t");
         for (j=0; j<srt->vset[i].nvar; j++)
         {
             var_t *var = &srt->var[srt->vset[i].var[j]];
-            fprintf(stderr,"\t%s",var->str);
+            printf( "\t%s",var->str);
             for (k=0; k<var->nvcf; k++)
-                fprintf(stderr,"%c%d", k==0?':':',',var->vcf[k]);
+                printf( "%c%d", k==0?':':',',var->vcf[k]);
         }
-        fprintf(stderr,"\n");
+        printf( "\n");
     }
 }
 void debug_vbuf(sr_sort_t *srt)
@@ -288,13 +288,13 @@ void debug_vbuf(sr_sort_t *srt)
     int i, j;
     for (j=0; j<srt->vcf_buf[0].nrec; j++)
     {
-        fprintf(stderr,"dbg_vbuf %d:\t", j);
+        printf( "dbg_vbuf %d:\t", j);
         for (i=0; i<srt->sr->nreaders; i++)
         {
             vcf_buf_t *buf = &srt->vcf_buf[i];
-            fprintf(stderr,"\t%d", buf->rec[j] ? buf->rec[j]->pos+1 : 0);
+            printf( "\t%d", buf->rec[j] ? buf->rec[j]->pos+1 : 0);
         }
-        fprintf(stderr,"\n");
+        printf( "\n");
     }
 }
 char *grp_create_key(sr_sort_t *srt)
@@ -499,7 +499,7 @@ static void bcf_sr_sort_set(bcf_srs_t *readers, sr_sort_t *srt, const char *chr,
     // pair the lines
     while ( srt->nvset )
     {
-        // fprintf(stderr,"\n"); debug_vsets(srt);
+        // printf( "\n"); debug_vsets(srt);
 
         int imax = 0;
         for (ivset=1; ivset<srt->nvset; ivset++)
@@ -511,7 +511,7 @@ static void bcf_sr_sort_set(bcf_srs_t *readers, sr_sort_t *srt, const char *chr,
         {
             if ( kbs_logical_and(srt->vset[imax].mask,srt->vset[ivset].mask) ) continue;   // cannot be merged
             uint32_t score = pairing_score(srt, imax, ivset);
-            // fprintf(stderr,"score: %d %d, logic=%d \t..\t %u\n", imax,ivset,srt->pair,score);
+            // printf( "score: %d %d, logic=%d \t..\t %u\n", imax,ivset,srt->pair,score);
             if ( max_score < score ) { max_score = score; ipair = ivset; }
         }
 
@@ -642,4 +642,3 @@ void bcf_sr_sort_destroy(sr_sort_t *srt)
     free(srt->pmat);
     memset(srt,0,sizeof(*srt));
 }
-

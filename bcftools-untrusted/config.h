@@ -87,7 +87,7 @@
 #define PACKAGE_NAME "HTSlib"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "HTSlib 1.4"
+#define PACKAGE_STRING "HTSlib 1.5"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "htslib"

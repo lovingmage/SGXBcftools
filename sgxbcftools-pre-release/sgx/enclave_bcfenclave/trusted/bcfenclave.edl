@@ -1,0 +1,32 @@
+/* bcfenclave.edl - Top EDL file. */
+
+enclave {
+    
+    /* 
+     * ocall_bcfenclave_sample - invokes OCALL to display string buffer inside the enclave.
+     *  [in]: copy the string buffer to App outside.
+     *  [string]: specifies 'str' is a NULL terminated buffer.
+     */
+
+
+    untrusted {
+        void ocall_bcfenclave_sample([in, string] const char *str);
+        int ocall_hfile_oflags([in, string] const char *mode);
+        int ocall_open([in, string] const char* filename, int mode);
+        int ocall_read(int file, [out, size=size] void *buf, unsigned int size);
+        int ocall_write(int file, [in, size=size] void *buf, unsigned int size);
+        int ocall_close(int file);
+        int ocall_fsync(int file);
+        void print_ocall([in, string] char* message);
+
+        int ocall_readmem([in, size=size]void *file, [out, size=size] void *buf, unsigned int size);
+    };
+
+
+    trusted {
+    	    public int ecall_bcfenclave_sample([in, string] char* refname, 
+                                                [in, string] char* reffile,
+                                                [in, string] char* genomefile,
+                                                [in, string] char* outfile);
+    };
+};

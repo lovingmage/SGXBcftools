@@ -15,6 +15,13 @@
  * printf: 
  *   Invokes OCALL to display the enclave buffer to the terminal.
  */
+
+double drand48(void){
+    double ret;
+	ocall_drand48(&ret);
+	return ret;
+}
+
 void printf(const char *fmt, ...)
 {
     char buf[BUFSIZ] = {'\0'};
@@ -59,7 +66,7 @@ int ecall_bcfenclave_sample(char* refname, char* reffile, char* genomefile, char
                   "mpileup1.tmp"   // Input Sam file used for variant cal   // Output File
                   };  
 
-  main_vcfcall(3, argvx + 1, outfile);
+  //main_vcfcall(3, argvx + 1, outfile);
   
   return 0;
 

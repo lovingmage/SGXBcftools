@@ -26,10 +26,10 @@
 
 #include <config.h>
 
-#include <math.h>
+//include <math.h>
 #include <stdlib.h>
 #include "htslib/kfunc.h"
-
+#define M_SQRT2 1.41421356237309504880
 /* Log gamma function
  * \log{\Gamma(z)}
  * AS245, 2nd algorithm, http://lib.stat.cmu.edu/apstat/245

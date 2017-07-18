@@ -27,6 +27,7 @@ sgx_status_t SGX_CDECL ocall_close(int* retval, int file);
 sgx_status_t SGX_CDECL ocall_fsync(int* retval, int file);
 sgx_status_t SGX_CDECL print_ocall(char* message);
 sgx_status_t SGX_CDECL ocall_readmem(int* retval, void* file, void* buf, unsigned int size);
+sgx_status_t SGX_CDECL ocall_drand48(double* retval);
 
 #ifdef __cplusplus
 }
