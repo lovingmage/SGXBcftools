@@ -129,143 +129,6 @@ int fsync(int file)
 
 
 
-//------------< Memory Copy File Reader >-----------------------------
-int readmem(void *file, void *buf, unsigned int size)
-{
-    int ret;
-    if (ocall_readmem(&ret, file, buf, size) != SGX_SUCCESS) return -1;
-    return ret;
-}
-
-
-static int dehex(char c)
-{
-    if (c >= 'a' && c <= 'f') return c - 'a' + 10;
-    else if (c >= 'A' && c <= 'F') return c - 'A' + 10;
-    else if (c >= '0' && c <= '9') return c - '0';
-    else return -1;  // Hence dehex('\0') = -1
-}
-
-int hts_decode_percent(char *dest, size_t *destlen, const char *s)
-{
-    char *d = dest;
-    int hi, lo;
-
-    while (*s) {
-        if (*s == '%' && (hi = dehex(s[1])) >= 0 && (lo = dehex(s[2])) >= 0) {
-            *d++ = (hi << 4) | lo;
-            s += 3;
-        }
-        else *d++ = *s++;
-    }
-
-    *d = '\0';
-    *destlen = d - dest;
-    return 0;
-}
-
-static int debase64(char c)
-{
-    if (c >= 'a' && c <= 'z') return c - 'a' + 26;
-    else if (c >= 'A' && c <= 'Z') return c - 'A';
-    else if (c >= '0' && c <= '9') return c - '0' + 52;
-    else if (c == '/') return 63;
-    else if (c == '+') return 62;
-    else return -1;  // Hence debase64('\0') = -1
-}
-
-size_t hts_base64_decoded_length(size_t len)
-{
-    size_t nquartets = (len + 2) / 4;
-    return 3 * nquartets;
-}
-
-int hts_decode_base64(char *dest, size_t *destlen, const char *s)
-{
-    char *d = dest;
-    int x0, x1, x2, x3;
-
-    while (1) {
-        x0 = debase64(*s++);
-        x1 = (x0 >= 0)? debase64(*s++) : -1;
-        x2 = (x1 >= 0)? debase64(*s++) : -1;
-        x3 = (x2 >= 0)? debase64(*s++) : -1;
-        if (x3 < 0) break;
-
-        *d++ = (x0 << 2) | (x1 >> 4);
-        *d++ = (x1 << 4) | (x2 >> 2);
-        *d++ = (x2 << 6) | x3;
-    }
-
-    if (x1 >= 0) *d++ = (x0 << 2) | (x1 >> 4);
-    if (x2 >= 0) *d++ = (x1 << 4) | (x2 >> 2);
-
-    *destlen = d - dest;
-    return 0;
-}
-
-static char *encode_utf8(char *s, unsigned x)
-{
-    if (x >= 0x10000) {
-        *s++ = 0xF0 | (x >> 18);
-        *s++ = 0x80 | ((x >> 12) & 0x3F);
-        *s++ = 0x80 | ((x >> 6) & 0x3F);
-        *s++ = 0x80 | (x & 0x3F);
-    }
-    else if (x >= 0x800) {
-        *s++ = 0xE0 | (x >> 12);
-        *s++ = 0x80 | ((x >> 6) & 0x3F);
-        *s++ = 0x80 | (x & 0x3F);
-    }
-    else if (x >= 0x80) {
-        *s++ = 0xC0 | (x >> 6);
-        *s++ = 0x80 | (x & 0x3F);
-    }
-    else *s++ = x;
-
-    return s;
-}
-
-static char *sscan_string(char *s)
-{
-    char *d = s;
-    int d1, d2, d3, d4;
-
-    for (;;) switch (*s) {
-    case '\\':
-        switch (s[1]) {
-        case '\0': *d = '\0'; return s+1;
-        case 'b': *d++ = '\b'; s += 2; break;
-        case 'f': *d++ = '\f'; s += 2; break;
-        case 'n': *d++ = '\n'; s += 2; break;
-        case 'r': *d++ = '\r'; s += 2; break;
-        case 't': *d++ = '\t'; s += 2; break;
-        default:  *d++ = s[1]; s += 2; break;
-        case 'u':
-            if ((d1 = dehex(s[2])) >= 0 && (d2 = dehex(s[3])) >= 0 &&
-                (d3 = dehex(s[4])) >= 0 && (d4 = dehex(s[5])) >= 0) {
-                d = encode_utf8(d, d1 << 12 | d2 << 8 | d3 << 4 | d4);
-                s += 6;
-            }
-            break;
-        }
-        break;
-
-    case '"':
-        *d = '\0';
-        return s+1;
-
-    case '\0':
-        *d = '\0';
-        return s;
-
-    default:
-        *d++ = *s++;
-        break;
-    }
-}
-
-
 hFILE *hfile_init(size_t struct_size, const char *mode, size_t capacity)
 {
     hFILE *fp = (hFILE *) malloc(struct_size);
@@ -838,16 +701,16 @@ static hFILE *hopen_mem(const char *url, const char *mode)
     if (strchr(mode, 'r') == NULL) { errno = EROFS; return NULL; }
 
     if (comma - url >= 7 && cmp_prefix(";base64", &comma[-7]) == 0) {
-        size = hts_base64_decoded_length(strlen(data));
+        //size = hts_base64_decoded_length(strlen(data));
         buffer = malloc(size);
         if (buffer == NULL) return NULL;
-        hts_decode_base64(buffer, &length, data);
+        //hts_decode_base64(buffer, &length, data);
     }
     else {
         size = strlen(data) + 1;
         buffer = malloc(size);
         if (buffer == NULL) return NULL;
-        hts_decode_percent(buffer, &length, data);
+        //hts_decode_percent(buffer, &length, data);
     }
 
     hFILE_mem *fp = (hFILE_mem *)

@@ -20,6 +20,7 @@ enclave {
         void print_ocall([in, string] char* message);
 
         int ocall_readmem([in, size=size]void *file, [out, size=size] void *buf, unsigned int size);
+        double ocall_drand48();
     };
 
 

@@ -65,8 +65,16 @@ Bcfenclave_C_Files := trusted/bcfenclave.c \
 					trusted/iocrypto.c\
 					trusted/probaln.c\
 					trusted/realn.c\
+					trusted/kmin.c\
+					trusted/prob1.c\
+					trusted/ploidy.c\
+					trusted/gvcf.c\
+					trusted/synced_bcf_reader.c\
+					trusted/bcf_sr_sort.c\
+					trusted/em.c\
+					trusted/ccall.c\
+					trusted/vcfcall.c\
 					trusted/bam2bcf_indel.c
-
 
 Bcfenclave_Include_Paths := -IInclude -Itrusted -I$(SGX_SDK)/include -I$(SGX_SDK)/include/tlibc -I$(SGX_SDK)/include/stlport
 

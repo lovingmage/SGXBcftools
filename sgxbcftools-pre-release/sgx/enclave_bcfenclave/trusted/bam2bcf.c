@@ -371,7 +371,7 @@ static double mann_whitney_1947_(int n, int m, int U)
 
 double mann_whitney_1947(int n, int m, int U)
 {
-    //#include "mw.h"
+    #include "mw.h"
 
     assert(n >= 2 && m >= 2);
 

@@ -64,6 +64,8 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include "bcfenclave.h"
+#include "bcfenclave_t.h"
 
 typedef struct {
 	void *left, *right;
@@ -261,7 +263,7 @@ typedef struct {
 		int i, j;														\
 		for (i = n; i > 1; --i) {										\
 			type_t tmp;													\
-			j = (int)(0.64257876510746 * i);									\
+			j = (int)(drand48() * i);									\
 			tmp = a[j]; a[j] = a[i-1]; a[i-1] = tmp;					\
 		}																\
 	}
