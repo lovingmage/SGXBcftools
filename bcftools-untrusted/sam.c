@@ -127,13 +127,13 @@ bam_hdr_t *bam_hdr_read(BGZF *fp)
     // check EOF
     has_EOF = bgzf_check_EOF(fp);
     if (has_EOF < 0) {
-        perror("[W::bam_hdr_read] bgzf_check_EOF");
+        printf("[W::bam_hdr_read] bgzf_check_EOF");
     } else if (has_EOF == 0 && hts_verbose >= 2)
-        fprintf(stderr, "[W::%s] EOF marker is absent. The input is probably truncated.\n", __func__);
+         printf(  "[W::%s] EOF marker is absent. The input is probably truncated.\n", __func__);
     // read "BAM1"
     magic_len = bgzf_read(fp, buf, 4);
     if (magic_len != 4 || strncmp(buf, "BAM\1", 4)) {
-        if (hts_verbose >= 1) fprintf(stderr, "[E::%s] invalid BAM binary header\n", __func__);
+        if (hts_verbose >= 1)  printf(  "[E::%s] invalid BAM binary header\n", __func__);
         return 0;
     }
     h = bam_hdr_init();
@@ -201,22 +201,22 @@ bam_hdr_t *bam_hdr_read(BGZF *fp)
     return h;
 
  nomem:
-    if (hts_verbose >= 1) fprintf(stderr, "[E::%s] out of memory\n", __func__);
+    if (hts_verbose >= 1)  printf(  "[E::%s] out of memory\n", __func__);
     goto clean;
 
  read_err:
     if (hts_verbose >= 1) {
         if (bytes < 0) {
-            fprintf(stderr, "[E::%s] error reading BGZF stream\n", __func__);
+             printf(  "[E::%s] error reading BGZF stream\n", __func__);
         } else {
-            fprintf(stderr, "[E::%s] truncated bam header\n", __func__);
+             printf(  "[E::%s] truncated bam header\n", __func__);
         }
     }
     goto clean;
 
  invalid:
     if (hts_verbose >= 1) {
-        fprintf(stderr, "[E::%s] invalid BAM binary header\n", __func__);
+         printf(  "[E::%s] invalid BAM binary header\n", __func__);
     }
 
  clean:
@@ -425,7 +425,7 @@ int bam_write1(BGZF *fp, const bam1_t *b)
     int i, ok;
     if (c->n_cigar >= 65536) {
         if (hts_verbose >= 1)
-            fprintf(stderr, "[E::%s] too many CIGAR operations (%d >= 64K for QNAME \"%s\")\n", __func__, c->n_cigar, bam_get_qname(b));
+             printf(  "[E::%s] too many CIGAR operations (%d >= 64K for QNAME \"%s\")\n", __func__, c->n_cigar, bam_get_qname(b));
         errno = EOVERFLOW;
         return -1;
     }
@@ -563,7 +563,7 @@ static int sam_bam_cram_readrec(BGZF *bgzfp, void *fpv, void *bv, int *tid, int 
     case bam:   return bam_read1(bgzfp, b);
     default:
         // TODO Need headers available to implement this for SAM files
-        fprintf(stderr, "[sam_bam_cram_readrec] Not implemented for SAM files -- Exiting\n");
+         printf(  "[sam_bam_cram_readrec] Not implemented for SAM files -- Exiting\n");
         abort();
     }
 }
@@ -632,7 +632,7 @@ bam_hdr_t *sam_hdr_parse(int l_text, const char *text)
                 k = kh_put(s2i, d, sn, &absent);
                 if (!absent) {
                     if (hts_verbose >= 2)
-                        fprintf(stderr, "[W::%s] duplicated sequence '%s'\n", __func__, sn);
+                         printf(  "[W::%s] duplicated sequence '%s'\n", __func__, sn);
                     free(sn);
                 } else kh_val(d, k) = (int64_t)(kh_size(d) - 1)<<32 | ln;
             }
@@ -675,7 +675,7 @@ bam_hdr_t *sam_hdr_read(htsFile *fp)
             free(line.s);
             if (hclose(f) != 0) {
                 if (hts_verbose >= 2)
-                    fprintf(stderr, "[W::%s] closing \"%s\" failed\n", __func__, fp->fn_aux);
+                     printf(  "[W::%s] closing \"%s\" failed\n", __func__, fp->fn_aux);
             }
         }
         if (str.l == 0) kputsn("", 0, &str);
@@ -742,9 +742,9 @@ int sam_parse1(kstring_t *s, bam_hdr_t *h, bam1_t *b)
 #define _read_token(_p) (_p); for (; *(_p) && *(_p) != '\t'; ++(_p)); if (*(_p) != '\t') goto err_ret; *(_p)++ = 0
 #define _read_token_aux(_p) (_p); for (; *(_p) && *(_p) != '\t'; ++(_p)); *(_p)++ = 0 // this is different in that it does not test *(_p)=='\t'
 #define _get_mem(type_t, _x, _s, _l) ks_resize((_s), (_s)->l + (_l)); *(_x) = (type_t*)((_s)->s + (_s)->l); (_s)->l += (_l)
-#define _parse_err(cond, msg) do { if ((cond) && hts_verbose >= 1) { fprintf(stderr, "[E::%s] " msg "\n", __func__); goto err_ret; } } while (0)
-#define _parse_err_param(cond, msg, param) do { if ((cond) && hts_verbose >= 1) { fprintf(stderr, "[E::%s] " msg "\n", __func__, param); goto err_ret; } } while (0)
-#define _parse_warn(cond, msg) if ((cond) && hts_verbose >= 2) fprintf(stderr, "[W::%s] " msg "\n", __func__)
+#define _parse_err(cond, msg) do { if ((cond) && hts_verbose >= 1) { printf(  "[E::%s] " msg "\n", __func__); goto err_ret; } } while (0)
+#define _parse_err_param(cond, msg, param) do { if ((cond) && hts_verbose >= 1) { printf(  "[E::%s] " msg "\n", __func__, param); goto err_ret; } } while (0)
+#define _parse_warn(cond, msg) if ((cond) && hts_verbose >= 2) printf(  "[W::%s] " msg "\n", __func__)
 
     uint8_t *t;
     char *p = s->s, *q;
@@ -995,7 +995,7 @@ err_recover:
         fp->line.l = 0;
         if (ret < 0) {
             if (hts_verbose >= 1)
-                fprintf(stderr, "[W::%s] parse error at line %lld\n", __func__, (long long)fp->lineno);
+                printf(  "[W::%s] parse error at line %lld\n", __func__, (long long)fp->lineno);
             if (h->ignore_sam_err) goto err_recover;
         }
         return ret;
@@ -1125,7 +1125,7 @@ int sam_format1(const bam_hdr_t *h, const bam1_t *b, kstring_t *str)
                 else if ('S' == sub_type) { kputw(le_to_u16(s), str); s += 2; }
                 else if ('i' == sub_type) { kputw(le_to_i32(s), str); s += 4; }
                 else if ('I' == sub_type) { kputuw(le_to_u32(s), str); s += 4; }
-                else if ('f' == sub_type) { kputd(le_to_float(s), str); s += 4; }
+                //else if ('f' == sub_type) { kputd(le_to_float(s), str); s += 4; }
                 else goto bad_aux;  // Unknown sub-type
             }
         } else { // Unknown type
@@ -1136,7 +1136,7 @@ int sam_format1(const bam_hdr_t *h, const bam1_t *b, kstring_t *str)
 
  bad_aux:
     if (hts_verbose >= 1) {
-        fprintf(stderr, "[E::%s] Corrupted aux data for read %s\n",
+        printf(  "[E::%s] Corrupted aux data for read %s\n",
                 __func__, bam_get_qname(b));
     }
     errno = EINVAL;
@@ -1311,7 +1311,7 @@ uint8_t *bam_aux_get(const bam1_t *b, const char tag[2])
 
  bad_aux:
     if (hts_verbose >= 1) {
-        fprintf(stderr, "[E::%s] Corrupted aux data for read %s\n",
+        printf(  "[E::%s] Corrupted aux data for read %s\n",
                 __func__, bam_get_qname(b));
     }
     errno = EINVAL;
@@ -1332,7 +1332,7 @@ int bam_aux_del(bam1_t *b, uint8_t *s)
 
  bad_aux:
     if (hts_verbose >= 1) {
-        fprintf(stderr, "[E::%s] Corrupted aux data for read %s\n",
+        printf(  "[E::%s] Corrupted aux data for read %s\n",
                 __func__, bam_get_qname(b));
     }
     errno = EINVAL;
@@ -1353,7 +1353,7 @@ int bam_aux_update_str(bam1_t *b, const char tag[2], int len, const char *data)
     char type = *s;
     if (type != 'Z') {
         if (hts_verbose > 1) {
-            fprintf(stderr,"bam_aux_update_str() called for type '%c' instead of 'Z'\n", type);
+            printf( "bam_aux_update_str() called for type '%c' instead of 'Z'\n", type);
         }
         errno = EINVAL;
         return -1;
@@ -1657,7 +1657,7 @@ static inline int resolve_cigar2(bam_pileup1_t *p, int32_t pos, cstate_t *s)
     uint32_t *cigar = bam_get_cigar(b);
     int k;
     // determine the current CIGAR operation
-//  fprintf(stderr, "%s\tpos=%d\tend=%d\t(%d,%d,%d)\n", bam_get_qname(b), pos, s->end, s->k, s->x, s->y);
+//  printf(  "%s\tpos=%d\tend=%d\t(%d,%d,%d)\n", bam_get_qname(b), pos, s->end, s->k, s->x, s->y);
     if (s->k == -1) { // never processed
         if (c->n_cigar == 1) { // just one operation, save a loop
           if (_cop(cigar[0]) == BAM_CMATCH || _cop(cigar[0]) == BAM_CEQUAL || _cop(cigar[0]) == BAM_CDIFF) s->k = 0, s->x = c->pos, s->y = 0;
@@ -1840,7 +1840,7 @@ static inline int cigar_iref2iseq_set(uint32_t **cigar, uint32_t *cigar_max, int
             (*cigar)++; *icig = 0; *iref += ncig;
             continue;
         }
-        fprintf(stderr,"todo: cigar %d\n", cig);
+        printf( "todo: cigar %d\n", cig);
         assert(0);
     }
     *iseq = -1;
@@ -1863,7 +1863,7 @@ static inline int cigar_iref2iseq_next(uint32_t **cigar, uint32_t *cigar_max, in
         if ( cig==BAM_CINS ) { (*cigar)++; *iseq += ncig; *icig = 0; continue; }
         if ( cig==BAM_CSOFT_CLIP ) { (*cigar)++; *iseq += ncig; *icig = 0; continue; }
         if ( cig==BAM_CHARD_CLIP || cig==BAM_CPAD ) { (*cigar)++; *icig = 0; continue; }
-        fprintf(stderr,"todo: cigar %d\n", cig);
+        printf( "todo: cigar %d\n", cig);
         assert(0);
     }
     *iseq = -1;
@@ -1889,7 +1889,7 @@ static void tweak_overlap_quality(bam1_t *a, bam1_t *b)
     if ( b_ret<0 ) return;  // no overlap
 
     #if DBG
-        fprintf(stderr,"tweak %s  n_cigar=%d %d  .. %d-%d vs %d-%d\n", bam_get_qname(a), a->core.n_cigar, b->core.n_cigar,
+        printf( "tweak %s  n_cigar=%d %d  .. %d-%d vs %d-%d\n", bam_get_qname(a), a->core.n_cigar, b->core.n_cigar,
             a->core.pos+1,a->core.pos+bam_cigar2rlen(a->core.n_cigar,bam_get_cigar(a)), b->core.pos+1, b->core.pos+bam_cigar2rlen(b->core.n_cigar,bam_get_cigar(b)));
     #endif
 
@@ -1912,7 +1912,7 @@ static void tweak_overlap_quality(bam1_t *a, bam1_t *b)
         if ( bam_seqi(a_seq,a_iseq) == bam_seqi(b_seq,b_iseq) )
         {
             #if DBG
-                fprintf(stderr,"%c",seq_nt16_str[bam_seqi(a_seq,a_iseq)]);
+                printf( "%c",seq_nt16_str[bam_seqi(a_seq,a_iseq)]);
             #endif
             // we are very confident about this base
             int qual = a_qual[a_iseq] + b_qual[b_iseq];
@@ -1924,7 +1924,7 @@ static void tweak_overlap_quality(bam1_t *a, bam1_t *b)
             if ( a_qual[a_iseq] >= b_qual[b_iseq] )
             {
                 #if DBG
-                    fprintf(stderr,"[%c/%c]",seq_nt16_str[bam_seqi(a_seq,a_iseq)],tolower_c(seq_nt16_str[bam_seqi(b_seq,b_iseq)]));
+                    printf( "[%c/%c]",seq_nt16_str[bam_seqi(a_seq,a_iseq)],tolower_c(seq_nt16_str[bam_seqi(b_seq,b_iseq)]));
                 #endif
                 a_qual[a_iseq] = 0.8 * a_qual[a_iseq];  // not so confident about a_qual anymore given the mismatch
                 b_qual[b_iseq] = 0;
@@ -1932,7 +1932,7 @@ static void tweak_overlap_quality(bam1_t *a, bam1_t *b)
             else
             {
                 #if DBG
-                    fprintf(stderr,"[%c/%c]",tolower_c(seq_nt16_str[bam_seqi(a_seq,a_iseq)]),seq_nt16_str[bam_seqi(b_seq,b_iseq)]);
+                    printf( "[%c/%c]",tolower_c(seq_nt16_str[bam_seqi(a_seq,a_iseq)]),seq_nt16_str[bam_seqi(b_seq,b_iseq)]);
                 #endif
                 b_qual[b_iseq] = 0.8 * b_qual[b_iseq];
                 a_qual[a_iseq] = 0;
@@ -1940,7 +1940,7 @@ static void tweak_overlap_quality(bam1_t *a, bam1_t *b)
         }
     }
     #if DBG
-        fprintf(stderr,"\n");
+        printf( "\n");
     #endif
 }
 
@@ -2033,7 +2033,7 @@ const bam_pileup1_t *bam_plp_next(bam_plp_t iter, int *_tid, int *_pos, int *_n_
         // update iter->tid and iter->pos
         if (iter->head != iter->tail) {
             if (iter->tid > iter->head->b.core.tid) {
-                fprintf(stderr, "[%s] unsorted input. Pileup aborts.\n", __func__);
+                printf(  "[%s] unsorted input. Pileup aborts.\n", __func__);
                 iter->error = 1;
                 *_n_plp = -1;
                 return NULL;
@@ -2072,12 +2072,12 @@ int bam_plp_push(bam_plp_t iter, const bam1_t *b)
         iter->tail->end = bam_endpos(b);
         iter->tail->s = g_cstate_null; iter->tail->s.end = iter->tail->end - 1; // initialize cstate_t
         if (b->core.tid < iter->max_tid) {
-            fprintf(stderr, "[bam_pileup_core] the input is not sorted (chromosomes out of order)\n");
+            printf(  "[bam_pileup_core] the input is not sorted (chromosomes out of order)\n");
             iter->error = 1;
             return -1;
         }
         if ((b->core.tid == iter->max_tid) && (iter->tail->beg < iter->max_pos)) {
-            fprintf(stderr, "[bam_pileup_core] the input is not sorted (reads out of order)\n");
+            printf(  "[bam_pileup_core] the input is not sorted (reads out of order)\n");
             iter->error = 1;
             return -1;
         }

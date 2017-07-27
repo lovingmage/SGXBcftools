@@ -17,6 +17,7 @@ extern "C" {
 
 
 int ecall_bcfenclave_sample(char* refname, char* reffile, char* genomefile, char* outfile);
+int ecall_bcfenclave_ccall(char* mlpfile, char* ccallfile);
 
 sgx_status_t SGX_CDECL ocall_bcfenclave_sample(const char* str);
 sgx_status_t SGX_CDECL ocall_hfile_oflags(int* retval, const char* mode);

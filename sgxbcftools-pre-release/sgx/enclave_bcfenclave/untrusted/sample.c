@@ -294,7 +294,9 @@ int SGX_CDECL main(int argc, char *argv[])
     sgx_status_t ret = SGX_ERROR_UNEXPECTED;
     int ecall_return = 0;
 
-    ret = ecall_bcfenclave_sample(global_eid, &ecall_return, argv[1], argv[1], argv[2], argv[3]);
+    //ret = ecall_bcfenclave_sample(global_eid, &ecall_return, argv[1], argv[1], argv[2], argv[3]);
+    ret = ecall_bcfenclave_ccall(global_eid, &ecall_return, argv[1], argv[2]);
+
     if (ret != SGX_SUCCESS)
         abort();
 

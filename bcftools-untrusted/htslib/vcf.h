@@ -766,6 +766,7 @@ typedef struct {
      *  Notes: Prior to using the macros, the presence of the info should be
      *  tested with bcf_hdr_idinfo_exists().
      */
+     
     #define bcf_hdr_id2length(hdr,type,int_id)  ((hdr)->id[BCF_DT_ID][int_id].val->info[type]>>8 & 0xf)
     #define bcf_hdr_id2number(hdr,type,int_id)  ((hdr)->id[BCF_DT_ID][int_id].val->info[type]>>12)
     #define bcf_hdr_id2type(hdr,type,int_id)    ((hdr)->id[BCF_DT_ID][int_id].val->info[type]>>4 & 0xf)

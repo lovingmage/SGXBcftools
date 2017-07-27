@@ -28,6 +28,7 @@ int SGX_UBRIDGE(SGX_NOCONVENTION, ocall_readmem, (void* file, void* buf, unsigne
 double SGX_UBRIDGE(SGX_NOCONVENTION, ocall_drand48, ());
 
 sgx_status_t ecall_bcfenclave_sample(sgx_enclave_id_t eid, int* retval, char* refname, char* reffile, char* genomefile, char* outfile);
+sgx_status_t ecall_bcfenclave_ccall(sgx_enclave_id_t eid, int* retval, char* mlpfile, char* ccallfile);
 
 #ifdef __cplusplus
 }

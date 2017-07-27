@@ -25,6 +25,12 @@ typedef struct ms_ecall_bcfenclave_sample_t {
 	char* ms_outfile;
 } ms_ecall_bcfenclave_sample_t;
 
+typedef struct ms_ecall_bcfenclave_ccall_t {
+	int ms_retval;
+	char* ms_mlpfile;
+	char* ms_ccallfile;
+} ms_ecall_bcfenclave_ccall_t;
+
 typedef struct ms_ocall_bcfenclave_sample_t {
 	char* ms_str;
 } ms_ocall_bcfenclave_sample_t;
@@ -152,32 +158,76 @@ err:
 	return status;
 }
 
+static sgx_status_t SGX_CDECL sgx_ecall_bcfenclave_ccall(void* pms)
+{
+	ms_ecall_bcfenclave_ccall_t* ms = SGX_CAST(ms_ecall_bcfenclave_ccall_t*, pms);
+	sgx_status_t status = SGX_SUCCESS;
+	char* _tmp_mlpfile = ms->ms_mlpfile;
+	size_t _len_mlpfile = _tmp_mlpfile ? strlen(_tmp_mlpfile) + 1 : 0;
+	char* _in_mlpfile = NULL;
+	char* _tmp_ccallfile = ms->ms_ccallfile;
+	size_t _len_ccallfile = _tmp_ccallfile ? strlen(_tmp_ccallfile) + 1 : 0;
+	char* _in_ccallfile = NULL;
+
+	CHECK_REF_POINTER(pms, sizeof(ms_ecall_bcfenclave_ccall_t));
+	CHECK_UNIQUE_POINTER(_tmp_mlpfile, _len_mlpfile);
+	CHECK_UNIQUE_POINTER(_tmp_ccallfile, _len_ccallfile);
+
+	if (_tmp_mlpfile != NULL) {
+		_in_mlpfile = (char*)malloc(_len_mlpfile);
+		if (_in_mlpfile == NULL) {
+			status = SGX_ERROR_OUT_OF_MEMORY;
+			goto err;
+		}
+
+		memcpy(_in_mlpfile, _tmp_mlpfile, _len_mlpfile);
+		_in_mlpfile[_len_mlpfile - 1] = '\0';
+	}
+	if (_tmp_ccallfile != NULL) {
+		_in_ccallfile = (char*)malloc(_len_ccallfile);
+		if (_in_ccallfile == NULL) {
+			status = SGX_ERROR_OUT_OF_MEMORY;
+			goto err;
+		}
+
+		memcpy(_in_ccallfile, _tmp_ccallfile, _len_ccallfile);
+		_in_ccallfile[_len_ccallfile - 1] = '\0';
+	}
+	ms->ms_retval = ecall_bcfenclave_ccall(_in_mlpfile, _in_ccallfile);
+err:
+	if (_in_mlpfile) free(_in_mlpfile);
+	if (_in_ccallfile) free(_in_ccallfile);
+
+	return status;
+}
+
 SGX_EXTERNC const struct {
 	size_t nr_ecall;
-	struct {void* ecall_addr; uint8_t is_priv;} ecall_table[1];
+	struct {void* ecall_addr; uint8_t is_priv;} ecall_table[2];
 } g_ecall_table = {
-	1,
+	2,
 	{
 		{(void*)(uintptr_t)sgx_ecall_bcfenclave_sample, 0},
+		{(void*)(uintptr_t)sgx_ecall_bcfenclave_ccall, 0},
 	}
 };
 
 SGX_EXTERNC const struct {
 	size_t nr_ocall;
-	uint8_t entry_table[10][1];
+	uint8_t entry_table[10][2];
 } g_dyn_entry_table = {
 	10,
 	{
-		{0, },
-		{0, },
-		{0, },
-		{0, },
-		{0, },
-		{0, },
-		{0, },
-		{0, },
-		{0, },
-		{0, },
+		{0, 0, },
+		{0, 0, },
+		{0, 0, },
+		{0, 0, },
+		{0, 0, },
+		{0, 0, },
+		{0, 0, },
+		{0, 0, },
+		{0, 0, },
+		{0, 0, },
 	}
 };
 

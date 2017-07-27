@@ -209,41 +209,41 @@ kstring.o kstring.pico: kstring.c config.h $(htslib_kstring_h)
 hfile.o hfile.pico: hfile.c config.h $(htslib_hfile_h) $(hfile_internal_h) $(hts_internal_h) $(htslib_khash_h)
 #Done
 hts.o hts.pico: hts.c config.h $(htslib_hts_h) $(htslib_bgzf_h) $(htslib_hfile_h) version.h $(hts_internal_h) $(htslib_khash_h) $(htslib_kseq_h) $(htslib_ksort_h) 
-#DOne
+#Done
 vcf.o vcf.pico: vcf.c config.h $(htslib_vcf_h) $(htslib_bgzf_h) $(htslib_tbx_h) $(htslib_hfile_h) $(hts_internal_h) $(htslib_khash_str2int_h) $(htslib_kstring_h) $(htslib_khash_h) $(htslib_kseq_h) $(htslib_hts_endian_h)
-#Done
+#Done, Check
 sam.o sam.pico: sam.c config.h $(htslib_sam_h) $(htslib_bgzf_h) $(hts_internal_h) $(htslib_hfile_h) $(htslib_khash_h) $(htslib_kseq_h) $(htslib_kstring_h) $(htslib_hts_endian_h) 
-#Done
+#Done, Check
 tbx.o tbx.pico: tbx.c config.h $(htslib_tbx_h) $(htslib_bgzf_h) $(hts_internal_h) $(htslib_khash_h)
-#Done
+#Done, Check
 faidx.o faidx.pico: faidx.c config.h $(htslib_bgzf_h) $(htslib_faidx_h) $(htslib_hfile_h) $(htslib_khash_h) $(htslib_kstring_h) $(hts_internal_h)
-#Done
+#Done, Check
 kfunc.o kfunc.pico: kfunc.c config.h $(htslib_kfunc_h)
-#Done
+#Done, Check
 md5.o md5.pico: md5.c config.h $(htslib_hts_h) $(htslib_hts_endian_h)
-#Done
+#Done, Check
 realn.o realn.pico: realn.c config.h $(htslib_hts_h) $(htslib_sam_h)
-#Done
+#Done, Check
 probaln.o probaln.pico: probaln.c config.h $(htslib_hts_h)
-#Done
+#Done, Check
 prob1.o: prob1.c $(prob1_h)
-#Done
+#Done, Check
 ploidy.o: ploidy.c regidx.h $(htslib_khash_str2int_h) $(htslib_kseq_h) $(htslib_hts_h) $(bcftools_h) $(ploidy_h)
-#Done
+#Done, Check
 gvcf.o: gvcf.c gvcf.h $(call_h)
-#Done
+#Done, Check
 bcf_sr_sort.o bcf_sr_sort.pico: bcf_sr_sort.c config.h bcf_sr_sort.h $(htslib_kseq_h) $(htslib_khash_str2int_h)
-#Done
+#Done, Check
 synced_bcf_reader.o synced_bcf_reader.pico: synced_bcf_reader.c config.h bcf_sr_sort.h $(htslib_synced_bcf_reader_h) $(htslib_kseq_h) $(htslib_khash_str2int_h) $(htslib_bgzf_h)
-#Done
+#Done, Check
 ccall.o: ccall.c $(htslib_kfunc_h) $(call_h) kmin.h $(prob1_h)
-#Done
+#Done, Check
 kmin.o: kmin.c kmin.h
-#Done
+#Done, Check
 em.o: em.c $(htslib_vcf_h) kmin.h $(call_h)
-#Done
+#Done, Check
 vcfcall.o: vcfcall.c $(htslib_vcf_h) $(htslib_kfunc_h) $(htslib_synced_bcf_reader_h) $(htslib_khash_str2int_h) $(bcftools_h) $(call_h) $(prob1_h) $(ploidy_h)
-
+#Done, Check
 
 bcftools: $(OBJS)
 	$(CC) $(ALL_LDFLAGS) -o $@ $(OBJS) $(HTSLIB_LIBS) $(GSL_LIBS) $(ALL_LIBS)

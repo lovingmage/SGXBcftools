@@ -520,8 +520,7 @@ static void _reader_fill_buffer(bcf_srs_t *files, bcf_sr_t *reader)
             else
             {
                 printf( "[%s:%d %s] fixme: not ready for this\n", __FILE__,__LINE__,__FUNCTION__);
-                //exit(1);
-                return -1;
+                return;
             }
         }
         else if ( reader->tbx_idx )

@@ -158,7 +158,7 @@ static inline int get_intv(tbx_t *tbx, kstring_t *str, tbx_intv_t *intv, int is_
             case TBX_UCSC: type = "TBX_UCSC"; break;
             default: type = "TBX_GENERIC"; break;
         }
-        fprintf(stderr, "[E::%s] failed to parse %s, was wrong -p [type] used?\nThe offending line was: \"%s\"\n", __func__, type, str->s);
+        printf(  "[E::%s] failed to parse %s, was wrong -p [type] used?\nThe offending line was: \"%s\"\n", __func__, type, str->s);
         return -1;
     }
 }
@@ -318,7 +318,7 @@ tbx_t *tbx_index_load2(const char *fn, const char *fnidx)
     // of whatever it reads.
     for (; p - nm < l_nm; p += strlen(p) + 1) {
         if (get_tid(tbx, p, 1) < 0) {
-            fprintf(stderr, "[E::%s] %s\n", __func__, strerror(errno));
+            printf(  "[E::%s] %s\n", __func__, strerror(errno));
             goto fail;
         }
     }
@@ -326,7 +326,7 @@ tbx_t *tbx_index_load2(const char *fn, const char *fnidx)
 
  invalid:
     if (hts_verbose >= 1) {
-        fprintf(stderr, "[E::%s] Invalid index header for %s\n",
+        printf(  "[E::%s] Invalid index header for %s\n",
                 __func__, fnidx ? fnidx : fn);
     }
  fail:

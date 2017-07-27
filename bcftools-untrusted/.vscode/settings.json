@@ -14,6 +14,7 @@
         "stdio.h": "c",
         "bgzf.h": "c",
         "kseq.h": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "math.h": "c"
     }
 }

@@ -104,7 +104,7 @@ int main()
                   "mpileup1.tmp"    // Output File
                   };  
 
-  bam_mpileup(argc - 1, argv + 1, "/home/cwang/Desktop/dataset/Homo_sapiens.GRCh38.dna.chromosome.11.fa", "/home/cwang/Desktop/dataset/Homo_sapiens.GRCh38.dna.chromosome.11.fa", "/home/cwang/Desktop/dataset/HG01537.chrom11.ILLUMINA.bwa.IBS.low_coverage.20130415.sam", "/home/cwang/Desktop/dataset/HG01537.chrom11.ILLUMINA.bwa.IBS.low_coverage.20130415.untrust.mlp") ;  
+  //bam_mpileup(argc - 1, argv + 1, "/home/cwang/Desktop/dataset/Homo_sapiens.GRCh38.dna.chromosome.11.fa", "/home/cwang/Desktop/dataset/Homo_sapiens.GRCh38.dna.chromosome.11.fa", "/home/cwang/Desktop/dataset/HG01537.chrom11.ILLUMINA.bwa.IBS.low_coverage.20130415.sam", "/home/cwang/Desktop/dataset/HG01537.chrom11.ILLUMINA.bwa.IBS.low_coverage.20130415.untrust.mlp") ;  
  //bam_mpileup(argc, argv+1);
  // The parameters are not using in the new version again
   char* argvx[] = {"bcftools", 
@@ -113,7 +113,7 @@ int main()
                   "mpileup1.tmp"   // Input Sam file used for variant cal   // Output File
                   };  
 
-  //main_vcfcall(3, argvx + 1, "/home/cwang/Desktop/dataset/NA12234.chrom20.ILLUMINA.bwa.CEU.low_coverage.20130415.untrust.mlp");
+  main_vcfcall(3, argvx + 1, "/home/cwang/Desktop/dataset/NA12234.chrom20.ILLUMINA.bwa.CEU.low_coverage.20130415.origin.mlp");
   return 0;
 }
 #endif

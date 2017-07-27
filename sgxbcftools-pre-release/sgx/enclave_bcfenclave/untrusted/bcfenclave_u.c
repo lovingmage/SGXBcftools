@@ -9,6 +9,12 @@ typedef struct ms_ecall_bcfenclave_sample_t {
 	char* ms_outfile;
 } ms_ecall_bcfenclave_sample_t;
 
+typedef struct ms_ecall_bcfenclave_ccall_t {
+	int ms_retval;
+	char* ms_mlpfile;
+	char* ms_ccallfile;
+} ms_ecall_bcfenclave_ccall_t;
+
 typedef struct ms_ocall_bcfenclave_sample_t {
 	char* ms_str;
 } ms_ocall_bcfenclave_sample_t;
@@ -170,6 +176,17 @@ sgx_status_t ecall_bcfenclave_sample(sgx_enclave_id_t eid, int* retval, char* re
 	ms.ms_genomefile = genomefile;
 	ms.ms_outfile = outfile;
 	status = sgx_ecall(eid, 0, &ocall_table_bcfenclave, &ms);
+	if (status == SGX_SUCCESS && retval) *retval = ms.ms_retval;
+	return status;
+}
+
+sgx_status_t ecall_bcfenclave_ccall(sgx_enclave_id_t eid, int* retval, char* mlpfile, char* ccallfile)
+{
+	sgx_status_t status;
+	ms_ecall_bcfenclave_ccall_t ms;
+	ms.ms_mlpfile = mlpfile;
+	ms.ms_ccallfile = ccallfile;
+	status = sgx_ecall(eid, 1, &ocall_table_bcfenclave, &ms);
 	if (status == SGX_SUCCESS && retval) *retval = ms.ms_retval;
 	return status;
 }

@@ -28,6 +28,7 @@
 #include "bcftools.h"
 #include "ploidy.h"
 
+
 struct _ploidy_t
 {
     int nsex, msex;     // number of genders, m:number of allocated elements in id2sex array
@@ -86,7 +87,7 @@ int ploidy_parse(const char *line, char **chr_beg, char **chr_end, uint32_t *beg
     // Parse the payload
     char *se = ss;
     while ( *se && !isspace(*se) ) se++;
-    if ( !*se || se==ss ) error("Could not parse: %s\n", line);
+    if ( !*se || se==ss )  printf("Could not parse: %s\n", line);
     ploidy->tmp_str.l = 0;
     kputsn(ss,se-ss,&ploidy->tmp_str);
 
@@ -103,9 +104,9 @@ int ploidy_parse(const char *line, char **chr_beg, char **chr_end, uint32_t *beg
 
     ss = se;
     while ( *se && isspace(*se) ) se++;
-    if ( !*se ) error("Could not parse: %s\n", line);
+    if ( !*se )  printf("Could not parse: %s\n", line);
     sp->ploidy = strtol(ss,&se,10);
-    if ( ss==se ) error("Could not parse: %s\n", line);
+    if ( ss==se )  printf("Could not parse: %s\n", line);
     if ( ploidy->min<0 || sp->ploidy < ploidy->min ) ploidy->min = sp->ploidy;
     if ( ploidy->max<0 || sp->ploidy > ploidy->max ) ploidy->max = sp->ploidy;
 
@@ -265,4 +266,3 @@ int ploidy_min(ploidy_t *ploidy)
 {
     return ploidy->dflt < ploidy->min ? ploidy->dflt : ploidy->min;
 }
-

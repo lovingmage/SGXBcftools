@@ -24,15 +24,11 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.  */
 
 #include "config.h"
-
-//#include "zlib/zlib.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <limits.h>
-//#include <fcntl.h>
 #include <errno.h>
-//#include <sys/stat.h>
 #include <assert.h>
 
 #include "htslib/hts.h"
@@ -118,37 +114,7 @@ static enum htsFormatCategory format_category(enum htsExactFormat fmt)
     return unknown_category;
 }
 
-// Decompress up to ten or so bytes by peeking at the file, which must be
-// positioned at the start of a GZIP block.
-/*
-static size_t decompress_peek(hFILE *fp, unsigned char *dest, size_t destsize)
-{
-    // Typically at most a couple of hundred bytes of input are required
-    // to get a few bytes of output from inflate(), so hopefully this buffer
-    // size suffices in general.
-    unsigned char buffer[512];
-    z_stream zs;
-    ssize_t npeek = hpeek(fp, buffer, sizeof buffer);
 
-    if (npeek < 0) return 0;
-
-    zs.zalloc = NULL;
-    zs.zfree = NULL;
-    zs.next_in = buffer;
-    zs.avail_in = npeek;
-    zs.next_out = dest;
-    zs.avail_out = destsize;
-    if (inflateInit2(&zs, 31) != Z_OK) return 0;
-
-    while (zs.total_out < destsize)
-        if (inflate(&zs, Z_SYNC_FLUSH) != Z_OK) break;
-
-    destsize = zs.total_out;
-    inflateEnd(&zs);
-
-    return destsize;
-}
-*/
 // Parse "x.y" text, taking care because the string is not NUL-terminated
 // and filling in major/minor only when the digits are followed by a delimiter,
 // so we don't misread "1.10" as "1.1" due to reaching the end of the buffer.

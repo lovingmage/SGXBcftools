@@ -58,7 +58,7 @@ int ecall_bcfenclave_sample(char* refname, char* reffile, char* genomefile, char
                     };
 
   //bam_mpileup(argc - 1, argv + 1, "mpileup.ref.fa", "mpileup.ref.fa", "mpileup1.sam", "mpileup1.tmp") ;  
-  bam_mpileup(argc - 1, argv + 1, refname, reffile, genomefile, outfile) ;  
+  bam_mpileup(argc - 1, argv + 1, refname, reffile, genomefile, outfile);  
 
   char* argvx[] = {"bcftools", 
                   "call", 
@@ -66,9 +66,21 @@ int ecall_bcfenclave_sample(char* refname, char* reffile, char* genomefile, char
                   "mpileup1.tmp"   // Input Sam file used for variant cal   // Output File
                   };  
 
-  //main_vcfcall(3, argvx + 1, outfile);
+  main_vcfcall(3, argvx + 1, outfile);
   
   return 0;
 
+}
+
+int ecall_bcfenclave_ccall(char* mlpfile, char* callfile)
+{
+    char* argvx[] = {"bcftools", 
+                  "call", 
+                  "-mv",             // Default paramater
+                  "mpileup1.tmp"   // Input Sam file used for variant cal   // Output File
+                  };  
+
+    main_vcfcall(3, argvx + 1, mlpfile, callfile);
+  return 0;
 }
 

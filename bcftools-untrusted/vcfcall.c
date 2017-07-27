@@ -24,10 +24,10 @@ THE SOFTWARE.  */
 
 #include <stdarg.h>
 #include <string.h>
-#include <strings.h>
+//#include <strings.h>
 #include <errno.h>
 #include <unistd.h>
-#include <getopt.h>
+//#include <getopt.h>
 #include <math.h>
 #include "htslib/vcf.h"
 #include <time.h>
@@ -43,7 +43,7 @@ THE SOFTWARE.  */
 #include "ploidy.h"
 #include "gvcf.h"
 
-void error(const char *format, ...);
+//void printf(const char *format, ...);
 
 #ifdef _WIN32
 #define srand48(x) srand(x)
@@ -244,7 +244,7 @@ static char **parse_ped_samples(call_t *call, char **vals, int nvals, int *nsmpl
 
     if ( i!=nvals ) // not a ped file
     {
-        if ( i>0 ) error("Could not parse samples, not a PED format.\n");
+        if ( i>0 ) printf("Could not parse samples, not a PED format.\n");
         return NULL;
     }
     *nsmpl = nlines;
@@ -262,7 +262,7 @@ static void set_samples(args_t *args, const char *fn, int is_file)
 {
     int i, nlines;
     char **lines = hts_readlist(fn, is_file, &nlines);
-    if ( !lines ) error("Could not read the file: %s\n", fn);
+    if ( !lines ) printf("Could not read the file: %s\n", fn);
 
     int nsmpls;
     char **smpls = parse_ped_samples(&args->aux, lines, nlines, &nsmpls);
@@ -287,22 +287,22 @@ static void set_samples(args_t *args, const char *fn, int is_file)
     {
         char *ss = lines[i];
         while ( *ss && isspace(*ss) ) ss++;
-        if ( !*ss ) error("Could not parse: %s\n", lines[i]);
+        if ( !*ss ) printf("Could not parse: %s\n", lines[i]);
         if ( *ss=='#' ) continue;
         char *se = ss;
         while ( *se && !isspace(*se) ) se++;
         char x = *se, *xptr = se; *se = 0;
 
         int ismpl = bcf_hdr_id2int(args->aux.hdr, BCF_DT_SAMPLE, ss);
-        if ( ismpl < 0 ) { fprintf(stderr,"Warning: No such sample in the VCF: %s\n",ss); continue; }
-        if ( old2new[ismpl] != -1 ) { fprintf(stderr,"Warning: The sample is listed multiple times: %s\n",ss); continue; }
+        if ( ismpl < 0 ) { printf( "Warning: No such sample in the VCF: %s\n",ss); continue; }
+        if ( old2new[ismpl] != -1 ) { printf( "Warning: The sample is listed multiple times: %s\n",ss); continue; }
 
         ss = se+1;
         while ( *ss && isspace(*ss) ) ss++;
         if ( !*ss ) ss = "2";   // default ploidy
         se = ss;
         while ( *se && !isspace(*se) ) se++;
-        if ( se==ss ) { *xptr = x; error("Could not parse: \"%s\"\n", lines[i]); }
+        if ( se==ss ) { *xptr = x; printf("Could not parse: \"%s\"\n", lines[i]); }
 
         if ( ss[1]==0 && (ss[0]=='0' || ss[0]=='1' || ss[0]=='2') )
             args->sample2sex[nsmpl] = -1*(ss[0]-'0');
@@ -360,7 +360,7 @@ static void print_missed_line(bcf_sr_regions_t *regs, void *data)
         if ( *ss=='\t' ) i++;
         ss++;
     }
-    if ( !*ss ) error("Could not parse: [%s] (%d)\n", regs->line.s,args->aux.srs->targets_als);
+    if ( !*ss ) printf("Could not parse: [%s] (%d)\n", regs->line.s,args->aux.srs->targets_als);
 
     missed->rid  = bcf_hdr_name2id(call->hdr,regs->seq_names[regs->prev_seq]);
     missed->pos  = regs->start;
@@ -377,7 +377,7 @@ static void init_data(args_t *args)
     if ( args->targets )
     {
         if ( bcf_sr_set_targets(args->aux.srs, args->targets, args->targets_is_file, args->aux.flag&CALL_CONSTR_ALLELES ? 3 : 0)<0 )
-            error("Failed to read the targets: %s\n", args->targets);
+            printf("Failed to read the targets: %s\n", args->targets);
 
         if ( args->aux.flag&CALL_CONSTR_ALLELES && args->flag&CF_INS_MISSED )
         {
@@ -388,10 +388,11 @@ static void init_data(args_t *args)
     if ( args->regions )
     {
         if ( bcf_sr_set_regions(args->aux.srs, args->regions, args->regions_is_file)<0 )
-            error("Failed to read the regions: %s\n", args->regions);
+            printf("Failed to read the regions: %s\n", args->regions);
     }
 
-    if ( !bcf_sr_add_reader(args->aux.srs, args->bcf_fname) ) error("Failed to open %s: %s\n", args->bcf_fname,bcf_sr_strerror(args->aux.srs->errnum));
+    if ( !bcf_sr_add_reader(args->aux.srs, args->bcf_fname) ) printf("Failed to open %s \n", args->bcf_fname );
+    //if ( !bcf_sr_add_reader(args->aux.srs, args->bcf_fname) ) printf("Failed to open %s: %s\n", args->bcf_fname,bcf_sr_strprintf(args->aux.srs->errnum));
     args->aux.hdr = bcf_sr_get_header(args->aux.srs,0);
 
     int i;
@@ -400,8 +401,8 @@ static void init_data(args_t *args)
         set_samples(args, args->samples_fname, args->samples_is_file);
         if ( args->aux.flag&CALL_CONSTR_TRIO )
         {
-            if ( 3*args->aux.nfams!=args->nsamples ) error("Expected only trios in %s, sorry!\n", args->samples_fname);
-            fprintf(stderr,"Detected %d samples in %d trio families\n", args->nsamples,args->aux.nfams);
+            if ( 3*args->aux.nfams!=args->nsamples ) printf("Expected only trios in %s, sorry!\n", args->samples_fname);
+            printf( "Detected %d samples in %d trio families\n", args->nsamples,args->aux.nfams);
         }
     }
     if ( args->ploidy  )
@@ -428,17 +429,17 @@ static void init_data(args_t *args)
     if ( args->gvcf )
     {
         int id = bcf_hdr_id2int(args->aux.hdr,BCF_DT_ID,"DP");
-        if ( id<0 || !bcf_hdr_idinfo_exists(args->aux.hdr,BCF_HL_FMT,id) ) error("--gvcf output mode requires FORMAT/DP tag, which is not present in the input header\n");
+        if ( id<0 || !bcf_hdr_idinfo_exists(args->aux.hdr,BCF_HL_FMT,id) ) printf("--gvcf output mode requires FORMAT/DP tag, which is not present in the input header\n");
         gvcf_update_header(args->gvcf, args->aux.hdr);
     }
 
     if ( args->samples_map )
     {
         args->aux.hdr = bcf_hdr_subset(bcf_sr_get_header(args->aux.srs,0), args->nsamples, args->samples, args->samples_map);
-        if ( !args->aux.hdr ) error("Error occurred while subsetting samples\n");
+        if ( !args->aux.hdr ) printf("printf occurred while subsetting samples\n");
         for (i=0; i<args->nsamples; i++)
-            if ( args->samples_map[i]<0 ) error("No such sample: %s\n", args->samples[i]);
-        if ( !bcf_hdr_nsamples(args->aux.hdr) ) error("No matching sample found\n");
+            if ( args->samples_map[i]<0 ) printf("No such sample: %s\n", args->samples[i]);
+        if ( !bcf_hdr_nsamples(args->aux.hdr) ) printf("No matching sample found\n");
     }
     else
     {
@@ -447,12 +448,14 @@ static void init_data(args_t *args)
         {
             for (i=0; i<args->nsamples; i++)
                 if ( bcf_hdr_id2int(args->aux.hdr,BCF_DT_SAMPLE,args->samples[i])<0 )
-                    error("No such sample: %s\n", args->samples[i]);
+                    printf("No such sample: %s\n", args->samples[i]);
         }
     }
 
     args->out_fh = hts_open(args->output_fname, hts_bcf_wmode(args->output_type));
-    if ( args->out_fh == NULL ) error("Can't write to \"%s\": %s\n", args->output_fname, strerror(errno));
+    if ( args->out_fh == NULL ) printf("Can't write to \"%s\" \n", args->output_fname);
+    //if ( args->out_fh == NULL ) printf("Can't write to \"%s\": %s\n", args->output_fname, strprintf(errno));
+    
     //if ( args->n_threads ) hts_set_threads(args->out_fh, args->n_threads);
 
     if ( args->flag & CF_QCALL )
@@ -502,6 +505,7 @@ static void destroy_data(args_t *args)
     bcf_sr_destroy(args->aux.srs);
 }
 
+/*
 void parse_novel_rate(args_t *args, const char *str)
 {
     if ( sscanf(str,"%le,%le,%le",&args->aux.trio_Pm_SNPs,&args->aux.trio_Pm_del,&args->aux.trio_Pm_ins)==3 )  // explicit for all
@@ -521,8 +525,9 @@ void parse_novel_rate(args_t *args, const char *str)
         args->aux.trio_Pm_del  = -1;
         args->aux.trio_Pm_ins  = -1;
     }
-    else error("Could not parse --novel-rate %s\n", str);
+    else printf("Could not parse --novel-rate %s\n", str);
 }
+*/
 
 static int parse_format_flag(const char *str)
 {
@@ -536,8 +541,9 @@ static int parse_format_flag(const char *str)
         else if ( !strncasecmp(ss,"GP",se-ss) ) flag |= CALL_FMT_GP;
         else
         {
-            fprintf(stderr,"Could not parse \"%s\"\n", str);
-            exit(1);
+            printf( "Could not parse \"%s\"\n", str);
+            //exit(1);
+            return -1;
         }
         if ( !*se ) break;
         ss = se + 1;
@@ -576,84 +582,87 @@ ploidy_t *init_ploidy(char *alias)
 
     if ( !pld->alias )
     {
-        fprintf(stderr,"\nPRE-DEFINED PLOIDY FILES\n\n");
-        fprintf(stderr," * Columns are: CHROM,FROM,TO,SEX,PLOIDY\n");
-        fprintf(stderr," * Coordinates are 1-based inclusive.\n");
-        fprintf(stderr," * A '*' means any value not otherwise defined.\n\n");
+        printf( "\nPRE-DEFINED PLOIDY FILES\n\n");
+        printf( " * Columns are: CHROM,FROM,TO,SEX,PLOIDY\n");
+        printf( " * Coordinates are 1-based inclusive.\n");
+        printf( " * A '*' means any value not otherwise defined.\n\n");
         pld = ploidy_predefs;
         while ( pld->alias )
         {
-            fprintf(stderr,"%s\n   .. %s\n\n", pld->alias,pld->about);
+            printf( "%s\n   .. %s\n\n", pld->alias,pld->about);
             if ( detailed )
-                fprintf(stderr,"%s\n", pld->ploidy);
+                printf( "%s\n", pld->ploidy);
             pld++;
         }
-        fprintf(stderr,"Run as --ploidy <alias> (e.g. --ploidy GRCh37).\n");
-        fprintf(stderr,"To see the detailed ploidy definition, append a question mark (e.g. --ploidy GRCh37?).\n");
-        fprintf(stderr,"\n");
-        exit(-1);
+        printf( "Run as --ploidy <alias> (e.g. --ploidy GRCh37).\n");
+        printf( "To see the detailed ploidy definition, append a question mark (e.g. --ploidy GRCh37?).\n");
+        printf( "\n");
+        //(-1);
+        return -1;
     }
     else if ( detailed )
     {
-        fprintf(stderr,"%s", pld->ploidy);
-        exit(-1);
+        printf( "%s", pld->ploidy);
+        //exit(-1);
+        return -1;
     }
     return ploidy_init_string(pld->ploidy,2);
 }
 
 static void usage(args_t *args)
 {
-    fprintf(stderr, "\n");
-    fprintf(stderr, "About:   SNP/indel variant calling from VCF/BCF. To be used in conjunction with samtools mpileup.\n");
-    fprintf(stderr, "         This command replaces the former \"bcftools view\" caller. Some of the original\n");
-    fprintf(stderr, "         functionality has been temporarily lost in the process of transition to htslib,\n");
-    fprintf(stderr, "         but will be added back on popular demand. The original calling model can be\n");
-    fprintf(stderr, "         invoked with the -c option.\n");
-    fprintf(stderr, "Usage:   bcftools call [options] <in.vcf.gz>\n");
-    fprintf(stderr, "\n");
-    fprintf(stderr, "File format options:\n");
-    fprintf(stderr, "       --no-version                do not append version and command line to the header\n");
-    fprintf(stderr, "   -o, --output <file>             write output to a file [standard output]\n");
-    fprintf(stderr, "   -O, --output-type <b|u|z|v>     output type: 'b' compressed BCF; 'u' uncompressed BCF; 'z' compressed VCF; 'v' uncompressed VCF [v]\n");
-    fprintf(stderr, "       --ploidy <assembly>[?]      predefined ploidy, 'list' to print available settings, append '?' for details\n");
-    fprintf(stderr, "       --ploidy-file <file>        space/tab-delimited list of CHROM,FROM,TO,SEX,PLOIDY\n");
-    fprintf(stderr, "   -r, --regions <region>          restrict to comma-separated list of regions\n");
-    fprintf(stderr, "   -R, --regions-file <file>       restrict to regions listed in a file\n");
-    fprintf(stderr, "   -s, --samples <list>            list of samples to include [all samples]\n");
-    fprintf(stderr, "   -S, --samples-file <file>       PED file or a file with an optional column with sex (see man page for details) [all samples]\n");
-    fprintf(stderr, "   -t, --targets <region>          similar to -r but streams rather than index-jumps\n");
-    fprintf(stderr, "   -T, --targets-file <file>       similar to -R but streams rather than index-jumps\n");
-    fprintf(stderr, "       --threads <int>             number of extra output compression threads [0]\n");
-    fprintf(stderr, "\n");
-    fprintf(stderr, "Input/output options:\n");
-    fprintf(stderr, "   -A, --keep-alts                 keep all possible alternate alleles at variant sites\n");
-    fprintf(stderr, "   -f, --format-fields <list>      output format fields: GQ,GP (lowercase allowed) []\n");
-    fprintf(stderr, "   -F, --prior-freqs <AN,AC>       use prior allele frequencies\n");
-    fprintf(stderr, "   -g, --gvcf <int>,[...]          group non-variant sites into gVCF blocks by minimum per-sample DP\n");
-    fprintf(stderr, "   -i, --insert-missed             output also sites missed by mpileup but present in -T\n");
-    fprintf(stderr, "   -M, --keep-masked-ref           keep sites with masked reference allele (REF=N)\n");
-    fprintf(stderr, "   -V, --skip-variants <type>      skip indels/snps\n");
-    fprintf(stderr, "   -v, --variants-only             output variant sites only\n");
-    fprintf(stderr, "\n");
-    fprintf(stderr, "Consensus/variant calling options:\n");
-    fprintf(stderr, "   -c, --consensus-caller          the original calling method (conflicts with -m)\n");
-    fprintf(stderr, "   -C, --constrain <str>           one of: alleles, trio (see manual)\n");
-    fprintf(stderr, "   -m, --multiallelic-caller       alternative model for multiallelic and rare-variant calling (conflicts with -c)\n");
-    fprintf(stderr, "   -n, --novel-rate <float>,[...]  likelihood of novel mutation for constrained trio calling, see man page for details [1e-8,1e-9,1e-9]\n");
-    fprintf(stderr, "   -p, --pval-threshold <float>    variant if P(ref|D)<FLOAT with -c [0.5]\n");
-    fprintf(stderr, "   -P, --prior <float>             mutation rate (use bigger for greater sensitivity), use with -m [1.1e-3]\n");
+    printf(  "\n");
+    printf(  "About:   SNP/indel variant calling from VCF/BCF. To be used in conjunction with samtools mpileup.\n");
+    printf(  "         This command replaces the former \"bcftools view\" caller. Some of the original\n");
+    printf(  "         functionality has been temporarily lost in the process of transition to htslib,\n");
+    printf(  "         but will be added back on popular demand. The original calling model can be\n");
+    printf(  "         invoked with the -c option.\n");
+    printf(  "Usage:   bcftools call [options] <in.vcf.gz>\n");
+    printf(  "\n");
+    printf(  "File format options:\n");
+    printf(  "       --no-version                do not append version and command line to the header\n");
+    printf(  "   -o, --output <file>             write output to a file [standard output]\n");
+    printf(  "   -O, --output-type <b|u|z|v>     output type: 'b' compressed BCF; 'u' uncompressed BCF; 'z' compressed VCF; 'v' uncompressed VCF [v]\n");
+    printf(  "       --ploidy <assembly>[?]      predefined ploidy, 'list' to print available settings, append '?' for details\n");
+    printf(  "       --ploidy-file <file>        space/tab-delimited list of CHROM,FROM,TO,SEX,PLOIDY\n");
+    printf(  "   -r, --regions <region>          restrict to comma-separated list of regions\n");
+    printf(  "   -R, --regions-file <file>       restrict to regions listed in a file\n");
+    printf(  "   -s, --samples <list>            list of samples to include [all samples]\n");
+    printf(  "   -S, --samples-file <file>       PED file or a file with an optional column with sex (see man page for details) [all samples]\n");
+    printf(  "   -t, --targets <region>          similar to -r but streams rather than index-jumps\n");
+    printf(  "   -T, --targets-file <file>       similar to -R but streams rather than index-jumps\n");
+    printf(  "       --threads <int>             number of extra output compression threads [0]\n");
+    printf(  "\n");
+    printf(  "Input/output options:\n");
+    printf(  "   -A, --keep-alts                 keep all possible alternate alleles at variant sites\n");
+    printf(  "   -f, --format-fields <list>      output format fields: GQ,GP (lowercase allowed) []\n");
+    printf(  "   -F, --prior-freqs <AN,AC>       use prior allele frequencies\n");
+    printf(  "   -g, --gvcf <int>,[...]          group non-variant sites into gVCF blocks by minimum per-sample DP\n");
+    printf(  "   -i, --insert-missed             output also sites missed by mpileup but present in -T\n");
+    printf(  "   -M, --keep-masked-ref           keep sites with masked reference allele (REF=N)\n");
+    printf(  "   -V, --skip-variants <type>      skip indels/snps\n");
+    printf(  "   -v, --variants-only             output variant sites only\n");
+    printf(  "\n");
+    printf(  "Consensus/variant calling options:\n");
+    printf(  "   -c, --consensus-caller          the original calling method (conflicts with -m)\n");
+    printf(  "   -C, --constrain <str>           one of: alleles, trio (see manual)\n");
+    printf(  "   -m, --multiallelic-caller       alternative model for multiallelic and rare-variant calling (conflicts with -c)\n");
+    printf(  "   -n, --novel-rate <float>,[...]  likelihood of novel mutation for constrained trio calling, see man page for details [1e-8,1e-9,1e-9]\n");
+    printf(  "   -p, --pval-threshold <float>    variant if P(ref|D)<FLOAT with -c [0.5]\n");
+    printf(  "   -P, --prior <float>             mutation rate (use bigger for greater sensitivity), use with -m [1.1e-3]\n");
 
     // todo (and more)
-    // fprintf(stderr, "\nContrast calling and association test options:\n");
-    // fprintf(stderr, "       -1 INT    number of group-1 samples [0]\n");
-    // fprintf(stderr, "       -C FLOAT  posterior constrast for LRT<FLOAT and P(ref|D)<0.5 [%g]\n", args->aux.min_lrt);
-    // fprintf(stderr, "       -U INT    number of permutations for association testing (effective with -1) [0]\n");
-    // fprintf(stderr, "       -X FLOAT  only perform permutations for P(chi^2)<FLOAT [%g]\n", args->aux.min_perm_p);
-    fprintf(stderr, "\n");
-    exit(-1);
+    // printf(  "\nContrast calling and association test options:\n");
+    // printf(  "       -1 INT    number of group-1 samples [0]\n");
+    // printf(  "       -C FLOAT  posterior constrast for LRT<FLOAT and P(ref|D)<0.5 [%g]\n", args->aux.min_lrt);
+    // printf(  "       -U INT    number of permutations for association testing (effective with -1) [0]\n");
+    // printf(  "       -X FLOAT  only perform permutations for P(chi^2)<FLOAT [%g]\n", args->aux.min_perm_p);
+    printf(  "\n");
+    //exit(-1);
+    return -1;
 }
 
-int main_vcfcall(int argc, char *argv[], char* mpileupFilename )
+int main_vcfcall(int argc, char *argv[], char* mpileupFilename)
 {
     char *ploidy_fname = NULL, *ploidy = NULL;
     args_t args;
@@ -718,8 +727,8 @@ int main_vcfcall(int argc, char *argv[], char* mpileupFilename )
         {
             case  2 : ploidy_fname = optarg; break;
             case  1 : ploidy = optarg; break;
-            case 'X': ploidy = "X"; fprintf(stderr,"Warning: -X will be deprecated, please use --ploidy instead.\n"); break;
-            case 'Y': ploidy = "Y"; fprintf(stderr,"Warning: -Y will be deprecated, please use --ploidy instead.\n"); break;
+            case 'X': ploidy = "X"; printf( "Warning: -X will be deprecated, please use --ploidy instead.\n"); break;
+            case 'Y': ploidy = "Y"; printf( "Warning: -Y will be deprecated, please use --ploidy instead.\n"); break;
             case 'f': args.aux.output_tags |= parse_format_flag(optarg); break;
             case 'M': args.flag &= ~CF_ACGT_ONLY; break;     // keep sites where REF is N
             case 'N': args.flag |= CF_ACGT_ONLY; break;      // omit sites where first base in REF is N (the new default)
@@ -730,13 +739,13 @@ int main_vcfcall(int argc, char *argv[], char* mpileupFilename )
             case 'F':
                 args.aux.prior_AN = optarg;
                 args.aux.prior_AC = strchr(optarg,',');
-                if ( !args.aux.prior_AC ) error("Expected two tags with -F (e.g. AN,AC), got \"%s\"\n",optarg);
+                if ( !args.aux.prior_AC ) printf("Expected two tags with -F (e.g. AN,AC), got \"%s\"\n",optarg);
                 *args.aux.prior_AC = 0;
                 args.aux.prior_AC++;
                 break;
             case 'g': 
                 args.gvcf = gvcf_init(optarg);
-                if ( !args.gvcf ) error("Could not parse: --gvcf %s\n", optarg);
+                if ( !args.gvcf ) printf("Could not parse: --gvcf %s\n", optarg);
                 break;
             case 'o': args.output_fname = optarg; break;
             case 'O':
@@ -745,26 +754,26 @@ int main_vcfcall(int argc, char *argv[], char* mpileupFilename )
                           case 'u': args.output_type = FT_BCF; break;
                           case 'z': args.output_type = FT_VCF_GZ; break;
                           case 'v': args.output_type = FT_VCF; break;
-                          default: error("The output type \"%s\" not recognised\n", optarg);
+                          default: printf("The output type \"%s\" not recognised\n", optarg);
                       }
                       break;
             case 'C':
                       if ( !strcasecmp(optarg,"alleles") ) args.aux.flag |= CALL_CONSTR_ALLELES;
                       else if ( !strcasecmp(optarg,"trio") ) args.aux.flag |= CALL_CONSTR_TRIO;
-                      else error("Unknown argument to -C: \"%s\"\n", optarg);
+                      else printf("Unknown argument to -C: \"%s\"\n", optarg);
                       break;
             case 'V':
                       if ( !strcasecmp(optarg,"snps") ) args.flag |= CF_INDEL_ONLY;
                       else if ( !strcasecmp(optarg,"indels") ) args.flag |= CF_NO_INDEL;
-                      else error("Unknown skip category \"%s\" (-S argument must be \"snps\" or \"indels\")\n", optarg);
+                      else printf("Unknown skip category \"%s\" (-S argument must be \"snps\" or \"indels\")\n", optarg);
                       break;
             case 'm': args.flag |= CF_MCALL; break;         // multiallelic calling method
             case 'p':
                 args.aux.pref = strtod(optarg,&tmp);
-                if ( *tmp ) error("Could not parse: --pval-threshold %s\n", optarg);
+                if ( *tmp ) printf("Could not parse: --pval-threshold %s\n", optarg);
                 break;
             case 'P': args.aux.theta = strtod(optarg,&tmp);
-                      if ( *tmp ) error("Could not parse, expected float argument: -P %s\n", optarg);
+                      if ( *tmp ) printf("Could not parse, expected float argument: -P %s\n", optarg);
                       break;
             case 'n': parse_novel_rate(&args,optarg); break;
             case 'r': args.regions = optarg; break;
@@ -782,38 +791,39 @@ int main_vcfcall(int argc, char *argv[], char* mpileupFilename )
     args.aux.flag |= CALL_VARONLY;
     args.flag |= CF_MCALL;
     //Set up the output file
-    args.output_fname = "mpileup1.call.vcf";
+    args.output_fname = "/home/cwang/Desktop/dataset/variant_call_result.vcf";
     
     // Sanity check options and initialize
     if ( ploidy_fname ) args.ploidy = ploidy_init(ploidy_fname, 2);
     else if ( ploidy ) args.ploidy = init_ploidy(ploidy);
-
     // Set up the Input File
+    /*
     if ( optind>=argc )
     {
         if ( !isatty(fileno((FILE *)stdin)) ) args.bcf_fname = "-";  // reading from stdin
         else usage(&args);
-    }
-    else args.bcf_fname = "mpileup1.tmp";
+    }*/
+
+    else args.bcf_fname = mpileupFilename;
 
     if ( !ploidy_fname && !ploidy )
     {
-        if ( !args.samples_is_file ) fprintf(stderr,"Note: none of --samples-file, --ploidy or --ploidy-file given, assuming all sites are diploid\n");
+        if ( !args.samples_is_file ) printf( "Note: none of --samples-file, --ploidy or --ploidy-file given, assuming all sites are diploid\n");
         args.ploidy = ploidy_init_string("* * * 0 0\n* * * 1 1\n* * * 2 2\n",2);
     }
 
-    if ( !args.ploidy ) error("Could not initialize ploidy\n");
-    if ( (args.flag & CF_CCALL ? 1 : 0) + (args.flag & CF_MCALL ? 1 : 0) + (args.flag & CF_QCALL ? 1 : 0) > 1 ) error("Only one of -c or -m options can be given\n");
-    if ( !(args.flag & CF_CCALL) && !(args.flag & CF_MCALL) && !(args.flag & CF_QCALL) ) error("Expected -c or -m option\n");
-    if ( (args.flag & CF_CCALL ? 1: 0) && args.gvcf ) error("gvcf -g option not functional with -c calling mode yet\n");
-    if ( args.aux.n_perm && args.aux.ngrp1_samples<=0 ) error("Expected -1 with -U\n");    // not sure about this, please fix
+    if ( !args.ploidy ) printf("Could not initialize ploidy\n");
+    if ( (args.flag & CF_CCALL ? 1 : 0) + (args.flag & CF_MCALL ? 1 : 0) + (args.flag & CF_QCALL ? 1 : 0) > 1 ) printf("Only one of -c or -m options can be given\n");
+    if ( !(args.flag & CF_CCALL) && !(args.flag & CF_MCALL) && !(args.flag & CF_QCALL) ) printf("Expected -c or -m option\n");
+    if ( (args.flag & CF_CCALL ? 1: 0) && args.gvcf ) printf("gvcf -g option not functional with -c calling mode yet\n");
+    if ( args.aux.n_perm && args.aux.ngrp1_samples<=0 ) printf("Expected -1 with -U\n");    // not sure about this, please fix
     if ( args.aux.flag & CALL_CONSTR_ALLELES )
     {
-        if ( !args.targets ) error("Expected -t or -T with \"-C alleles\"\n");
-        if ( !(args.flag & CF_MCALL) ) error("The \"-C alleles\" mode requires -m\n");
+        if ( !args.targets ) printf("Expected -t or -T with \"-C alleles\"\n");
+        if ( !(args.flag & CF_MCALL) ) printf("The \"-C alleles\" mode requires -m\n");
     }
-    if ( args.flag & CF_INS_MISSED && !(args.aux.flag&CALL_CONSTR_ALLELES) ) error("The -i option requires -C alleles\n");
-    if ( args.aux.flag&CALL_VARONLY && args.gvcf ) error("The two options cannot be combined: --variants-only and --gvcf\n");
+    if ( args.flag & CF_INS_MISSED && !(args.aux.flag&CALL_CONSTR_ALLELES) ) printf("The -i option requires -C alleles\n");
+    if ( args.aux.flag&CALL_VARONLY && args.gvcf ) printf("The two options cannot be combined: --variants-only and --gvcf\n");
     init_data(&args);
 
     while ( bcf_sr_next_line(args.aux.srs) )
@@ -860,7 +870,7 @@ int main_vcfcall(int argc, char *argv[], char* mpileupFilename )
             ret = mcall(&args.aux, bcf_rec);
         else
             ret = ccall(&args.aux, bcf_rec);
-        if ( ret==-1 ) error("Something is wrong\n");
+        if ( ret==-1 ) printf("Something is wrong\n");
         else if ( ret==-2 ) continue;   // skip the site
 
         // Normal output
@@ -875,4 +885,3 @@ int main_vcfcall(int argc, char *argv[], char* mpileupFilename )
     destroy_data(&args);
     return 0;
 }
-

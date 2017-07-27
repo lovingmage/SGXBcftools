@@ -196,7 +196,7 @@ bcf1_t *gvcf_write(gvcf_t *gvcf, htsFile *fh, bcf_hdr_t *hdr, bcf1_t *rec, int i
             ret = bcf_get_format_int32(hdr, rec, "PL", &gvcf->tmp, &gvcf->mtmp);
             if ( ret>=0 )
             {
-                if ( ret!=nsmpl*3 ) error("Unexpected number of PL fields\n");
+                if ( ret!=nsmpl*3 ) printf("Unexpected number of PL fields\n");
                 for (i=0; i<nsmpl; i++)
                 {
                     if ( gvcf->pl[3*i+1] > gvcf->tmp[3*i+1] )

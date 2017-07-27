@@ -28,9 +28,9 @@ endif
 endif
 
 ifeq ($(SGX_DEBUG), 1)
-        SGX_COMMON_CFLAGS += -O0 -Wall -Wc++-compat
+        SGX_COMMON_CFLAGS += -O0 -Wall
 else
-        SGX_COMMON_CFLAGS += -O2 -Wall -Wc++-compat 
+        SGX_COMMON_CFLAGS += -O2 -Wall 
 endif
 
 ifneq ($(SGX_MODE), HW)
@@ -62,17 +62,12 @@ Bcfenclave_C_Files := trusted/bcfenclave.c \
 					trusted/mcall.c\
 					trusted/bam2bcf.c\
 					trusted/mpileup.c\
-					trusted/iocrypto.c\
 					trusted/probaln.c\
 					trusted/realn.c\
-					trusted/kmin.c\
-					trusted/prob1.c\
 					trusted/ploidy.c\
 					trusted/gvcf.c\
 					trusted/synced_bcf_reader.c\
 					trusted/bcf_sr_sort.c\
-					trusted/em.c\
-					trusted/ccall.c\
 					trusted/vcfcall.c\
 					trusted/bam2bcf_indel.c
 

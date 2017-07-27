@@ -31,7 +31,6 @@ DEALINGS IN THE SOFTWARE.  */
 #include <string.h>
 #include <limits.h>
 #include <errno.h>
-//#include <sys/stat.h>
 #include "htslib/sam.h"
 #include "htslib/faidx.h"
 #include "htslib/kstring.h"
@@ -43,7 +42,6 @@ DEALINGS IN THE SOFTWARE.  */
 #include "bam_sample.h"
 #include "version.h"
 #include "bcfenclave.h"
-//#include "gvcf.h"
 
 #define MPLP_BCF        1
 #define MPLP_VCF        (1<<1)
@@ -282,20 +280,6 @@ static void flush_bcf_records(mplp_conf_t *conf, htsFile *fp, bcf_hdr_t *hdr, bc
     if ( rec ) bcf_write1(fp, hdr, rec);
         return;
 
-    //if ( !rec )
-    //{
-    //    gvcf_write(conf->gvcf, fp, hdr, NULL, 0);
-    //    return;
-    //}
-
-    int is_ref = 0;
-    if ( rec->n_allele==1 ) is_ref = 1;
-    else if ( rec->n_allele==2 )
-    {
-        // second allele is mpileup's X, not a variant
-        if ( rec->d.allele[1][0]=='<' && rec->d.allele[1][1]=='*' && rec->d.allele[1][2]=='>' ) is_ref = 1;
-    }
-    //rec = gvcf_write(conf->gvcf, fp, hdr, rec, is_ref);
     if ( rec ) bcf_write1(fp,hdr,rec);
 }
 
@@ -729,8 +713,6 @@ int bam_mpileup(int argc, char *argv[], char* refname, char* reffile, char* geno
 {
     //int c;
     const char *file_list = NULL;
-    char **fn = NULL;
-    int nfiles = 0, use_orphan = 0, noref = 0;
     mplp_conf_t mplp;
     memset(&mplp, 0, sizeof(mplp_conf_t));
     mplp.min_baseQ = 13;
@@ -780,16 +762,12 @@ int bam_mpileup(int argc, char *argv[], char* refname, char* reffile, char* geno
         printf( "Error: The -B option cannot be combined with -E\n");
         return 1;
     }
-    if (use_orphan) mplp.flag &= ~MPLP_NO_ORPHAN;
     if (argc == 1)
     {
         //print_usage(  &mplp);
         return 1;
     }
-    if (!mplp.fai && !noref) {
-        printf( "Error: mpileup requires the --fasta-ref option by default; use --no-reference to run without a fasta reference\n");
-        return 1;
-    }
+
     int ret,i;
     
     if (file_list) 
