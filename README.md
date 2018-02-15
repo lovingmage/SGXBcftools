@@ -18,26 +18,26 @@ is not needed - see HTSlib's INSTALL file for details.
 
 Packages for dpkg-based Linux distributions (Debian / Ubuntu) are:
 
-  zlib1g-dev
-  libbz2-dev
-  liblzma-dev
+>  zlib1g-dev
+>  libbz2-dev
+>  liblzma-dev
 
 Packages for rpm or yum-based Linux distributions (RedHat / Fedora / CentOS)
 are:
 
-  zlib-devel
-  bzip2-devel
-  xz-devel
+>  zlib-devel
+>  bzip2-devel
+>  xz-devel
 
 To build SGXBCFtools, you will need:
 
-    GNU make
-    C compiler (e.g. gcc or clang)
+>    GNU make
+>    C compiler (e.g. gcc or clang)
 
 In addition, building the configure script requires:
 
-    autoheader
-    autoconf
+>    autoheader
+>    autoconf
 
 Running the configure script uses awk, along with a number of
 standard UNIX tools (cat, cp, grep, mv, rm, sed, among others).  Almost
@@ -45,8 +45,8 @@ all installations will have these already.
 
 Running the test harness (make test) uses:
 
-    bash
-    perl
+>    bash
+>    perl
 
 Building Configure
 ==================
