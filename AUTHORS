@@ -1,7 +1,14 @@
-Secure BCFtools package is currently maintained by
-Chenghong Wang Petr Danecek, Shane McCarthy and John Marshall.
+This SGXBcftools project, Secure BCFtools package is developed and
+currently maintained by:
 
-Alphabetical list of people who have made contributions:
+Chenghong Wang.
+Department of Biomedical Informatics, UC San Diego.
+email: chw148@ucsd.edu
+home: www.lovingmage.com
+
+----------------------------
+The SGXBcftools is based on open-source project bcftools.
+Alphabetical list of people who have made contributions to bcftools:
 
     Nicholas Clarke
     Travis Collier

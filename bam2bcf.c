@@ -1,5 +1,20 @@
 /*  bam2bcf.c -- variant calling.
 
+/////////////////////////////////////////////////////////////////////
+// bam2bcf.c -- variant calling                                    //
+// ver 1.6                                                         //
+//-----------------------------------------------------------------//
+// Chenghong Wang (c) copyright 2017                               //
+// All rights granted provided this copyright notice is retained   //
+//-----------------------------------------------------------------//
+// Language:    C, C++, Visual Studio 2015                         //
+// Platform:    Ubuntu Server 16.04                                //
+// Author:      Chenghong Wang, UC San Diego, ATCRi 2-A03          //
+//              www.lovingmage.com                                 //
+/////////////////////////////////////////////////////////////////////
+
+Source Information: 
+
     Copyright (C) 2010-2012 Broad Institute.
     Copyright (C) 2012-2014 Genome Research Ltd.
 

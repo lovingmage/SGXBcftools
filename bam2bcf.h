@@ -1,5 +1,43 @@
 /*  bam2bcf.h -- variant calling.
 
+/////////////////////////////////////////////////////////////////////
+// bam2bcf.h -- variant calling                                    //
+// ver 1.6                                                         //
+//-----------------------------------------------------------------//
+// Chenghong Wang (c) copyright 2017                               //
+// All rights granted provided this copyright notice is retained   //
+//-----------------------------------------------------------------//
+// Language:    C, C++, Visual Studio 2015                         //
+// Platform:    Ubuntu Server 16.04                                //
+// Author:      Chenghong Wang, UC San Diego, ATCRi 2-A03          //
+//              www.lovingmage.com                                 //
+/////////////////////////////////////////////////////////////////////
+
+*  Maintanence History:
+*  --------------------
+*  ver 1.6 : 07 Jun 2018
+*  - disabled finding C# lambdas in GrammerHelps::isFunction
+*  ver 1.4 : 26 Feb 2016
+*  - added annunciation of version number
+*  - ActionsAndRules modified to fix minor bug in operator name collection.
+*  - SemiExpression, Tokenizer, and Utilities modified to use isspace from <locale>
+*    rather than <cctype> to avoid error handling some non-ASCII characters.
+*  ver 1.3 : 28 Oct 2017
+*  - added test for interface in AbstrSynTree functions show() and Add(ASTNode*)
+*  - wrapped path in quotes for display
+*  - added check for Byte Order Mark (BOM) in ConfigureParser.cpp
+*  - wrapped path in quotes in Window.cpp in case path has spaces, necessary
+*    since path is passed to Executive on command line.
+*  ver 1.2 : 27 Oct 2017
+*  - fixed bug in displayMetrics(ASTNode*) by adding test for interface
+*  ver 1.1 : 28 Aug 2017
+*  - many changes: added new functions and modified existing functions
+*  ver 1.0 : 09 Aug 2017
+*  - first release
+*
+
+Source Information: 
+
     Copyright (C) 2010-2012 Broad Institute.
     Copyright (C) 2012-2014,2016 Genome Research Ltd.
 
