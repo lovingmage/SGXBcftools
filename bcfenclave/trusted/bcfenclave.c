@@ -9,6 +9,8 @@
 
 #include "bcfenclave.h"
 #include "bcfenclave_t.h"  /* print_string */
+#include "sgx_tprotected_fs.h"
+
 
 /* 
  * printf: 
@@ -90,4 +92,18 @@ int ecall_bcfenclave_ccall(char* mlpfile, char* callfile)
     main_vcfcall(argc - 1, argv + 1);
 
   return 0;
+}
+
+int ecall_bcfenclave_fwr()
+{
+	char c[] = "this is tutorialspoint";
+	  char buffer[100];
+	  printf("==================================\n%s\n",c);
+	  const char* filename ="./f0";
+	  const char* mode ="w+";
+	  SGX_FILE* fc= sgx_fopen_auto_key(filename, mode);
+	  sgx_fwrite(c , 1 , sizeof(c) , fc );
+	  sgx_fclose(fc);
+	  printf("IN BCFENCLAVE 111\n");
+	  return 0;
 }

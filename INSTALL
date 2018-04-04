@@ -68,10 +68,12 @@ Compilation
     ./configure
     make
 
-This BCFtools release contains a modified version of HTSlib which will be 
-used to build SGXBCFtools.  If you already have a system-installed HTSlib or another HTSlib
-please reinstall these related packages and use the secure version of modified HTSlib shipped 
-with this package.
+This BCFtools release contains a copy of HTSlib which will be used to build
+BCFtools.  If you already have a system-installed HTSlib or another HTSlib
+that you would prefer to build against, you can arrange this by using the
+configure script's --with-htslib option.  Use --with-htslib=DIR to point
+to an HTSlib source tree or installation in DIR; or --with-htslib=system
+to use a system-installed HTSlib.
 
 
 Optional Compilation with GSL

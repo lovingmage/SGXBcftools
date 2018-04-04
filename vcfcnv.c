@@ -32,13 +32,22 @@
 
 #include <stdio.h>
 #include <unistd.h>
-#include <getopt.h>
 #include <math.h>
+#ifdef UNTRUSTED_MODE
+#include <getopt.h>
 #include <htslib/vcf.h>
 #include <htslib/synced_bcf_reader.h>
 #include <htslib/kstring.h>
 #include <htslib/kfunc.h>
 #include <htslib/khash_str2int.h>
+#else
+#include "utility/getopt.h"
+#include "htslib-1.5/htslib/vcf.h"
+#include "htslib-1.5/htslib/synced_bcf_reader.h"
+#include "htslib-1.5/htslib/kstring.h"
+#include "htslib-1.5/htslib/kfunc.h"
+#include "htslib-1.5/htslib/khash_str2int.h"
+#endif
 #include "bcftools.h"
 #include "HMM.h"
 #include "rbuf.h"

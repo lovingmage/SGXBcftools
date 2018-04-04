@@ -1,20 +1,5 @@
 /* The MIT License
 
-/////////////////////////////////////////////////////////////////////
-// bin.c -- utility function declarations.                         //
-// ver 1.6                                                         //
-//-----------------------------------------------------------------//
-// Chenghong Wang (c) copyright 2017                               //
-// All rights granted provided this copyright notice is retained   //
-//-----------------------------------------------------------------//
-// Language:    C, C++, Visual Studio 2015                         //
-// Platform:    Ubuntu Server 16.04                                //
-// Author:      Chenghong Wang, UC San Diego, ATCRi 2-A03          //
-//              www.lovingmage.com                                 //
-/////////////////////////////////////////////////////////////////////
-
-Source Information: 
-
    Copyright (c) 2016 Genome Research Ltd.
 
    Author: Petr Danecek <pd3@sanger.ac.uk>

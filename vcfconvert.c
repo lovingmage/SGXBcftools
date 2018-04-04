@@ -23,12 +23,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.  */
 
 #include <stdio.h>
-#include <strings.h>
+//#include <strings.h>
 #include <unistd.h>
-#include <getopt.h>
 #include <ctype.h>
 #include <string.h>
 #include <errno.h>
+#ifdef
+#include <getopt.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <htslib/faidx.h>
@@ -37,6 +38,15 @@ THE SOFTWARE.  */
 #include <htslib/synced_bcf_reader.h>
 #include <htslib/vcfutils.h>
 #include <htslib/kseq.h>
+#else
+#include "utility/getopt.h"
+#include "htslib-1.5/htslib/faidx.h"
+#include "htslib-1.5/htslib/vcf.h"
+#include "htslib-1.5/htslib/bgzf.h"
+#include "htslib-1.5/htslib/synced_bcf_reader.h"
+#include "htslib-1.5/htslib/vcfutils.h"
+#include "htslib-1.5/htslib/kseq.h"
+#endif
 #include "bcftools.h"
 #include "filter.h"
 #include "convert.h"
@@ -1513,11 +1523,15 @@ int main_vcfconvert(int argc, char *argv[])
 
     if ( !args->infname )
     {
+        #ifdef UNTRUSTED_MODE
         if ( optind>=argc )
         {
             if ( !isatty(fileno((FILE *)stdin)) ) args->infname = "-";
         }
         else args->infname = argv[optind];
+        #else
+        args->infname = argv[optind];
+        #endif
     }
     if ( !args->infname ) usage();
     

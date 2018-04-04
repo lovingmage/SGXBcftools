@@ -1,7 +1,9 @@
 /* bcfenclave.edl - Top EDL file. */
 
 enclave {
-    
+    from "sgx_tprotected_fs.edl" import *;
+    include "sgx_tprotected_fs.h"
+
     /* 
      * ocall_bcfenclave_sample - invokes OCALL to display string buffer inside the enclave.
      *  [in]: copy the string buffer to App outside.
@@ -30,5 +32,7 @@ enclave {
                                                 [in, string] char* outfile);
             public int ecall_bcfenclave_ccall(  [in, string] char* mlpfile,
                                                 [in, string] char* ccallfile);
+            public int ecall_bcfenclave_fwr();
+
     };
 };

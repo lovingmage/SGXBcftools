@@ -24,15 +24,24 @@ THE SOFTWARE.  */
 
 #include <stdio.h>
 #include <unistd.h>
-#include <getopt.h>
 #include <string.h>
 #include <errno.h>
 #include <math.h>
+#ifdef UNTRUSTED_MODE
+#include <getopt.h>
 #include <htslib/vcf.h>
 #include <htslib/synced_bcf_reader.h>
 #include <htslib/kseq.h>
 #include <htslib/bgzf.h>
 #include <htslib/tbx.h> // for hts_get_bgzfp()
+#else
+#include "utility/getopt.h"
+#include "htslib-1.5/htslib/vcf.h"
+#include "htslib-1.5/htslib/synced_bcf_reader.h"
+#include "htslib-1.5/htslib/kseq.h"
+#include "htslib-1.5/htslib/bgzf.h"
+#include "htslib-1.5/htslib/tbx.h" // for hts_get_bgzfp()
+#endif
 #include "bcftools.h"
 
 typedef struct _args_t
@@ -111,8 +120,9 @@ static void init_data(args_t *args)
     if (args->record_cmd_line) bcf_hdr_append_version(args->out_hdr, args->argc, args->argv, "bcftools_concat");
     args->out_fh = hts_open(args->output_fname,hts_bcf_wmode(args->output_type));
     if ( args->out_fh == NULL ) error("Can't write to \"%s\": %s\n", args->output_fname, strerror(errno));
+    #ifdef UNTRUSTED_MODE
     if ( args->n_threads ) hts_set_threads(args->out_fh, args->n_threads);
-
+    #endif
     bcf_hdr_write(args->out_fh, args->out_hdr);
 
     if ( args->allow_overlaps )
@@ -724,7 +734,9 @@ static void usage(args_t *args)
     fprintf(stderr, "   -R, --regions-file <file>      Restrict to regions listed in a file\n");
     fprintf(stderr, "       --threads <int>            Number of extra output compression threads [0]\n");
     fprintf(stderr, "\n");
+    #ifdef UNTRUSTED_MODE
     exit(1);
+    #endif
 }
 
 int main_vcfconcat(int argc, char *argv[])
