@@ -121,8 +121,8 @@ configure:3217: checking shared library type
 configure:3236: result: plain .so
 configure:3249: checking for library containing dlopen
 configure:3280: gcc -o conftest -g -O2   conftest.c  >&5
-/tmp/ccO6fWLl.o: In function `main':
-/home/lovingmag/Desktop/Zsgxbcftools-complete/conftest.c:22: undefined reference to `dlopen'
+/tmp/ccKyiBpG.o: In function `main':
+/home/lovingmag/Desktop/runnable-sgxbxftools-2/conftest.c:22: undefined reference to `dlopen'
 collect2: error: ld returned 1 exit status
 configure:3280: $? = 1
 configure: failed program was:
@@ -185,7 +185,7 @@ on lovingmage-GT72-6QD
 
 config.status:814: creating config.mk
 config.status:814: creating config.h
-configure:4958: === configuring in htslib-1.5 (/home/lovingmag/Desktop/Zsgxbcftools-complete/htslib-1.5)
+configure:4958: === configuring in htslib-1.5 (/home/lovingmag/Desktop/runnable-sgxbxftools-2/htslib-1.5)
 configure:5021: running /bin/bash ./configure --disable-option-checking '--prefix=/usr/local'  --cache-file=/dev/null --srcdir=.
 
 ## ---------------- ##

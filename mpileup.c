@@ -1,5 +1,15 @@
-/*  mpileup.c -- mpileup subcommand. Previously bam_plcmd.c from samtools
-
+/*-/////////////////////////////////////////////////////////////////////		
+ -// mpileup.c -- mpileup subcommand.                                //		
+ -// ver 1.6                                                         //		
+ -//-----------------------------------------------------------------//		
+ -// Chenghong Wang (c) copyright 2017                               //		
+ -// All rights granted provided this copyright notice is retained   //		
+ -//-----------------------------------------------------------------//		
+ -// Language:    C                                                  //		
+ -// Platform:    Ubuntu Server 16.04                                //		
+ -// Author:      Chenghong Wang,Zhixuan WU, UC San Diego, ATCRI     //		
+ -//              www.lovingmage.com                                 //		
+ -/////////////////////////////////////////////////////////////////////
     Copyright (C) 2008-2017 Genome Research Ltd.
     Portions copyright (C) 2009-2012 Broad Institute.
 

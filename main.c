@@ -1,5 +1,16 @@
-/*  main.c -- main bcftools command front-end.
 
+/*-/////////////////////////////////////////////////////////////////////		
+ -// main.c -- main bcftools command front-end.                      //		
+ -// ver 1.6                                                         //		
+ -//-----------------------------------------------------------------//		
+ -// Chenghong Wang (c) copyright 2017                               //		
+ -// All rights granted provided this copyright notice is retained   //		
+ -//-----------------------------------------------------------------//		
+ -// Language:    C                                                  //		
+ -// Platform:    Ubuntu Server 16.04                                //		
+ -// Author:      Chenghong Wang,Zhixuan WU, UC San Diego, ATCRI     //		
+ -//              www.lovingmage.com                                 //		
+ -/////////////////////////////////////////////////////////////////////
     Copyright (C) 2012-2016 Genome Research Ltd.
 
     Author: Petr Danecek <pd3@sanger.ac.uk>

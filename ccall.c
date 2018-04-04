@@ -1,5 +1,15 @@
-/*  ccall.c -- consensus variant calling.
-
+/*-/////////////////////////////////////////////////////////////////////		
+ -// ccall.c -- onsensus variant calling.                            //		
+ -// ver 1.6                                                         //		
+ -//-----------------------------------------------------------------//		
+ -// Chenghong Wang (c) copyright 2017                               //		
+ -// All rights granted provided this copyright notice is retained   //		
+ -//-----------------------------------------------------------------//		
+ -// Language:    C                                                  //		
+ -// Platform:    Ubuntu Server 16.04                                //		
+ -// Author:      Chenghong Wang,Zhixuan WU, UC San Diego, ATCRI     //		
+ -//              www.lovingmage.com                                 //		
+ -/////////////////////////////////////////////////////////////////////
     Copyright (C) 2013-2014 Genome Research Ltd.
     Portions copyright (C) 2010 Broad Institute.
 
