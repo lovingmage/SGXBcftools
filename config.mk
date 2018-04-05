@@ -38,14 +38,14 @@ CC       = gcc
 CPPFLAGS = 
 CFLAGS   = -g -O2 -DUNTRUSTED_MODE -DUNTRUSTED_CRAM -DUNTRUSTED_PTHREAD -DUNTRUSTED_TIME -DPARSE_NOVEL_RATE
 LDFLAGS  = 
-LIBS     = -ldl 
+LIBS     = 
 
 DYNAMIC_FLAGS = -rdynamic
 
 USE_GPL = 
 GSL_LIBS = 
 
-PLATFORM   = default
+PLATFORM   = Darwin
 PLUGINS_ENABLED = yes
 plugindir = $(libexecdir)/bcftools
 PLUGIN_EXT = .so
