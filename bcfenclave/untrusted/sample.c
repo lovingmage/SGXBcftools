@@ -291,6 +291,14 @@ int SGX_CDECL main(int argc, char *argv[])
 
     sgx_status_t ret = SGX_ERROR_UNEXPECTED;
     int ecall_return = 0;
+    ret = ecall_bcfenclave_fwr(global_eid, &ecall_return);
+    printf("======================%d/n",ret);
+
+
+/*
+    clock_t end_enclave = clock();
+    double time_spentin = (double)(end_enclave - begin) / CLOCKS_PER_SEC;
+    printf("The Total Initialization Time is: %lf\n", time_spentin);
 
     ret = ecall_bcfenclave_sample(global_eid, &ecall_return, argv[1], argv[1], argv[2], argv[3]);
 
@@ -305,6 +313,10 @@ int SGX_CDECL main(int argc, char *argv[])
         printf("[+] Application Mpileup failed %d \n", ecall_return);
     }
 
+    clock_t end_mp = clock();
+    double time_spentmp = (double)(end_mp - end_enclave) / CLOCKS_PER_SEC;
+    printf("The Total Initialization Time is: %lf\n", time_spentmp);
+
     ret = ecall_bcfenclave_ccall(global_eid, &ecall_return, argv[3], argv[4]);
 
     if (ret != SGX_SUCCESS)
@@ -318,12 +330,16 @@ int SGX_CDECL main(int argc, char *argv[])
         printf("[+] Application VCFCALL failed %d \n", ecall_return);
     }
 
-
+    clock_t end_call = clock();
+    double time_spentcall = (double)(end_call - end_mp) / CLOCKS_PER_SEC;
+    printf("The Total Initialization Time is: %lf\n", time_spentmp);
+*/
     sgx_destroy_enclave(global_eid);
-    clock_t end = clock();
-    double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+    //clock_t end = clock();
+    //double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
 
-    printf("The Total Running Time for the program is: %lf\n", time_spent);
+    //printf("The Total Running Time for the program is: %lf\n", time_spent);
 
     return ecall_return;
 }
+

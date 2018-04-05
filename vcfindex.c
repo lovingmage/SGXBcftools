@@ -25,6 +25,7 @@ DEALINGS IN THE SOFTWARE.  */
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#ifdef UNTRUSTED_MODE
 #include <getopt.h>
 #include <htslib/vcf.h>
 #include <htslib/tbx.h>
@@ -32,6 +33,12 @@ DEALINGS IN THE SOFTWARE.  */
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 #include <htslib/kstring.h>
+#else
+#include "utility/getopt.h"
+#include "htslib-1.5/htslib/vcf.h"
+#include "htslib-1.5/htslib/tbx.h"
+#include "htslib-1.5/htslib/kstring.h"
+#endif
 #include "bcftools.h"
 
 #define BCF_LIDX_SHIFT    14
@@ -54,9 +61,11 @@ static void usage(void)
     fprintf(stderr, "    -n, --nrecords       print number of records based on existing index file\n");
     fprintf(stderr, "    -s, --stats          print per contig stats based on existing index file\n");
     fprintf(stderr, "\n");
+    #ifdef UNTRUSTED_MODE
     exit(1);
+    #endif
 }
-
+#ifdef UNTRUSTED_MODE
 int vcf_index_stats(char *fname, int stats)
 {
     const char **seq;
@@ -119,7 +128,7 @@ int vcf_index_stats(char *fname, int stats)
         hts_idx_destroy(idx);
     return 0;
 }
-
+#endif
 int main_vcfindex(int argc, char *argv[])
 {
     int c, force = 0, tbi = 0, stats = 0, n_threads = 0;
@@ -178,6 +187,7 @@ int main_vcfindex(int argc, char *argv[])
     }
 
     char *fname = NULL;
+    #ifdef UNTRUSTED_MODE
     if ( optind>=argc )
     {
         if ( !isatty(fileno((FILE *)stdin)) ) fname = "-";  // reading from stdin
@@ -185,7 +195,9 @@ int main_vcfindex(int argc, char *argv[])
     }
     else fname = argv[optind];
     if (stats) return vcf_index_stats(fname, stats);
-
+    #else
+    fname = argv[optind];
+    #endif
     kstring_t idx_fname = {0,0,0};
     if (outfn)
         kputs(outfn,&idx_fname);
@@ -196,6 +208,7 @@ int main_vcfindex(int argc, char *argv[])
     }
     if (!force)
     {
+#ifdef UNTRUSTED_MODE
         // Before complaining about existing index, check if the VCF file isn't newer.
         struct stat stat_tbi, stat_file;
         if ( stat(idx_fname.s, &stat_tbi)==0 )
@@ -208,8 +221,8 @@ int main_vcfindex(int argc, char *argv[])
                 return 1;
             }
         }
+#endif
     }
-
     int ret = bcf_index_build3(fname, idx_fname.s, min_shift, n_threads);
     free(idx_fname.s);
     if (ret != 0) {

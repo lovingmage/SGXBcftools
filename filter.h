@@ -46,7 +46,9 @@ void filter_destroy(filter_t *filter);
   */
 int filter_test(filter_t *filter, bcf1_t *rec, const uint8_t **samples);
 
+#ifdef UNTRUSTED_MODE
 void filter_expression_info(FILE *fp);
+#endif
 int filter_max_unpack(filter_t *filter);
 
 #endif
