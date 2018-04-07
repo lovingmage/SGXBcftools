@@ -1,8 +1,20 @@
-/*  hfile.c -- buffered low-level input/output streams.
+ /*-///////////////////////////////////////////////////////////////////	
+ -// hfile.c -- buffered low-level input/output streams.             //		
+ -// ver 1.6 +                                                       //		
+ -//-----------------------------------------------------------------//		
+ -// Language:    C                                                  //		
+ -// Platform:    Ubuntu Server 16.04                                //		
+ -// Author:      Chenghong Wang,Zhixuan WU, UC San Diego, ATCRI     //		
+ -//              www.lovingmage.com                                 //		
+ -/////////////////////////////////////////////////////////////////////
 
-    Copyright (C) 2013-2016 Genome Research Ltd.
+History:
+    Apr. 6, 2018 change ocall-open/read/write... to sgx_call.
 
-    Author: John Marshall <jm18@sanger.ac.uk>
+
+Copyright (C) 2013-2016 Genome Research Ltd.
+
+Author: John Marshall <jm18@sanger.ac.uk>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -58,6 +70,14 @@ DEALINGS IN THE SOFTWARE.  */
 #define SSIZE_MAX LONG_MAX
 #endif
 
+
+#ifdef SGX_BUILD
+#include "sgx_tprotected_fs.h"
+#endif
+
+
+
+
 /* hFILE fields are used as follows:
 
    char *buffer;     // Pointer to the start of the I/O buffer
@@ -104,34 +124,48 @@ Use hfile_init_fixed() to create one of these.  */
 
 #ifdef SGX_BUILD
 int open(const char* filename, int mode) {
-    int ret;
-    if (ocall_open(&ret, filename, mode) != SGX_SUCCESS) return -1;
-    return ret;
+    
+    SGX_FILE* fc= sgx_fopen_auto_key(filename, mode);
+    if (fc==NULL) return -1;
+    return fc;
+
+    //int ret;
+    //if (ocall_open(&ret, filename, mode) != SGX_SUCCESS) return -1;
+    //return ret;
 }
 
 int read(int file, void *buf, unsigned int size) {
-    int ret;
-    if (ocall_read(&ret, file, buf, size) != SGX_SUCCESS) return -1;
-    return ret;
+
+    return sgx_fread(buf,size,1,file);
+
+
+
+
+    //int ret;
+    //if (ocall_read(&ret, file, buf, size) != SGX_SUCCESS) return -1;
+    //return ret;
 }
 
 int write(int file, void *buf, unsigned int size) {
-    int ret;
-    if (ocall_write(&ret, file, buf, size) != SGX_SUCCESS) return -1;
-    return ret;
+    return sgx_fwrite(buf,size,1,file);
+    //int ret;
+    //if (ocall_write(&ret, file, buf, size) != //SGX_SUCCESS) return -1;
+    //return ret;
 }
 
 int close(int file) {
-	int ret;
-    ocall_close(&ret, file);
-    return ret;
+    return sgx_fclose(file);
+	//int ret;
+    //ocall_close(&ret, file);
+    //return ret;
 }
 
 int fsync(int file)
 {
-	int ret;
-	ocall_fsync(&ret, file);
-	return ret;
+    return sgx_fflush(file);
+	//int ret;
+	//ocall_fsync(&ret, file);
+	//return ret;
 }
 #endif
 
