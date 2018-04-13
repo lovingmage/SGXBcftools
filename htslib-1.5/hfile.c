@@ -77,7 +77,6 @@ DEALINGS IN THE SOFTWARE.  */
 
 
 
-
 /* hFILE fields are used as follows:
 
    char *buffer;     // Pointer to the start of the I/O buffer
@@ -120,52 +119,90 @@ read() method, and should just return EINVAL for seek():
    ^buffer    ^begin         ^end  ^limit
 
 Use hfile_init_fixed() to create one of these.  */
-
-
 #ifdef SGX_BUILD
-int open(const char* filename, int mode) {
-    
-    SGX_FILE* fc= sgx_fopen_auto_key(filename, mode);
-    if (fc==NULL) return -1;
-    return fc;
+SGX_FILE* open(const char* filename,const char* mode) {
 
-    //int ret;
-    //if (ocall_open(&ret, filename, mode) != SGX_SUCCESS) return -1;
-    //return ret;
+    size_t len = strlen(filename);
+    char *sgxname = (char*)malloc(len + 1 + 1 ); /* one for extra char, one for trailing zero */
+    strcpy(sgxname, filename);
+    sgxname[len] = 'S';
+    sgxname[len + 1] = '\0';
+    //printf("OPEN===\n %s\n %s\n %s %d\n ",filename,sgxname,mode,hfile_oflags(mode));
+    if(hfile_oflags(mode)==0){
+
+        int fd = open0(filename, hfile_oflags(mode));
+        if (fd < 0) return 0;
+
+        SGX_FILE* fs = sgx_fopen_auto_key(sgxname, "w");
+
+        unsigned char buffer[1024];
+        int bytes_read=0;
+        do{
+            bytes_read = read0(fd, buffer, 1024); 
+            sgx_fwrite(buffer,1,bytes_read,fs);
+        }while (bytes_read>=1024); 
+       
+        sgx_fflush(fs);
+        close0(fd);
+        sgx_fclose(fs);
+
+        fs = sgx_fopen_auto_key(sgxname, mode);
+        return fs;
+    }
+    else{
+        SGX_FILE* fs= sgx_fopen_auto_key(sgxname, mode);
+        return fs;
+    }
+
+   return 0;
 }
 
-int read(int file, void *buf, unsigned int size) {
-
-    return sgx_fread(buf,size,1,file);
-
-
-
-
-    //int ret;
-    //if (ocall_read(&ret, file, buf, size) != SGX_SUCCESS) return -1;
-    //return ret;
+int read(SGX_FILE* file, void *buf, unsigned int size) {
+    return sgx_fread(buf,1,size,file);
 }
 
-int write(int file, void *buf, unsigned int size) {
-    return sgx_fwrite(buf,size,1,file);
-    //int ret;
-    //if (ocall_write(&ret, file, buf, size) != //SGX_SUCCESS) return -1;
-    //return ret;
+int write(SGX_FILE* file, void *buf, unsigned int size) {
+    return sgx_fwrite(buf,1,size,file);
 }
 
-int close(int file) {
+int close(SGX_FILE* file) {
     return sgx_fclose(file);
-	//int ret;
-    //ocall_close(&ret, file);
-    //return ret;
 }
 
-int fsync(int file)
+int fsync(SGX_FILE* file)
 {
     return sgx_fflush(file);
-	//int ret;
-	//ocall_fsync(&ret, file);
-	//return ret;
+}
+
+int open0(const char* filename, int mode) {
+    int ret;
+    if (ocall_open(&ret, filename, mode) != SGX_SUCCESS) return -1;
+    return ret;
+}
+
+int read0(int file, void *buf, unsigned int size) {
+    int ret;
+    if (ocall_read(&ret, file, buf, size) != SGX_SUCCESS) return -1;
+    return ret;
+}
+
+int write0(int file, void *buf, unsigned int size) {
+    int ret;
+    if (ocall_write(&ret, file, buf, size) != SGX_SUCCESS) return -1;
+    return ret;
+}
+
+int close0(int file) {
+	int ret;
+    ocall_close(&ret, file);
+    return ret;
+}
+
+int fsync0(int file)
+{
+	int ret;
+	ocall_fsync(&ret, file);
+	return ret;
 }
 #endif
 
@@ -258,7 +295,7 @@ static ssize_t refill_buffer(hFILE *fp)
 #ifdef UNTRUSTED_MODE
 /*
  * Changes the buffer size for an hFILE.  Ideally this is done
- * immediately after opening.  If performed later, this function may
+ * immediately after openingchar*.  If performed later, this function may
  * fail if we are reducing the buffer size and the current offset into
  * the buffer is beyond the new capacity.
  *
@@ -348,7 +385,7 @@ char *hgets(char *buffer, int size, hFILE *fp)
 {
     if (size < 1) {
         fp->has_errno = errno = EINVAL;
-        return NULL;
+        return NULL;    //return r;
     }
     return hgetln(buffer, size, fp) > 0 ? buffer : NULL;
 }
@@ -584,14 +621,23 @@ void hclose_abruptly(hFILE *fp)
 /* For Unix, it doesn't matter whether a file descriptor is a socket.
    However Windows insists on send()/recv() and its own closesocket()
    being used when fd happens to be a socket.  */
-
+/*
 typedef struct {
     hFILE base;
-    int fd;
+    int fd
     unsigned is_socket:1;
 } hFILE_fd;
+*/
+#ifdef SGX_BUILD
+typedef struct {
+    hFILE base;
+    SGX_FILE* fd;
+    unsigned is_socket:1;
+} hFILE_fd;
+#endif
 
 #ifdef UNTRUSTED_MODE
+
 static ssize_t fd_read(hFILE *fpv, void *buffer, size_t nbytes)
 {
     hFILE_fd *fp = (hFILE_fd *) fpv;
@@ -739,17 +785,18 @@ static size_t blksize(int fd)
 static hFILE *hopen_fd(const char *filename, const char *mode)
 {
     hFILE_fd *fp = NULL;
-    int fd = open(filename, hfile_oflags(mode));
-    if (fd < 0) goto error;
+    //int fd = open(filename, hfile_oflags(mode));
+    SGX_FILE *fd= open(filename, mode);
 
-    fp = (hFILE_fd *) hfile_init(sizeof (hFILE_fd), mode, blksize(fd));
+    fp = (hFILE_fd *) hfile_init(sizeof (hFILE_fd), mode, 0);
+    //fp = (hFILE_fd *) hfile_init(sizeof (hFILE_fd), mode, blksize(fd));
     if (fp == NULL) goto error;
 
     fp->fd = fd;
     fp->is_socket = 0;
     fp->base.backend = &fd_backend;
     return &fp->base;
-
+while(1);
 error:
     if (fd >= 0) { int save = errno; (void) close(fd); errno = save; }
     hfile_destroy((hFILE *) fp);

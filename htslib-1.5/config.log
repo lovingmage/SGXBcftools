@@ -41,6 +41,8 @@ PATH: /snap/bin
 PATH: /usr/lib/jvm/java-8-oracle/bin
 PATH: /usr/lib/jvm/java-8-oracle/db/bin
 PATH: /usr/lib/jvm/java-8-oracle/jre/bin
+PATH: /opt/intel/sgxsdk/bin
+PATH: /opt/intel/sgxsdk/bin/x64
 
 
 ## ----------- ##
@@ -237,8 +239,8 @@ configure:4016: gcc -o conftest -g -O2   conftest.c  >&5
 conftest.c:33:6: warning: conflicting types for built-in function 'log'
  char log ();
       ^
-/tmp/cc8fWuFp.o: In function `main':
-/home/lovingmag/Documents/SGXBcftools/htslib-1.5/conftest.c:37: undefined reference to `log'
+/tmp/ccEMb2S5.o: In function `main':
+/home/lovingmag/Desktop/SGXBcftools-response-to-issue13/htslib-1.5/conftest.c:37: undefined reference to `log'
 collect2: error: ld returned 1 exit status
 configure:4016: $? = 1
 configure: failed program was:
@@ -322,8 +324,8 @@ configure:4359: $? = 0
 configure:4368: result: yes
 configure:4484: checking for CCHmac
 configure:4484: gcc -o conftest -g -O2   conftest.c -llzma -lbz2 -lz -lm  >&5
-/tmp/ccpasRbK.o: In function `main':
-/home/lovingmag/Documents/SGXBcftools/htslib-1.5/conftest.c:65: undefined reference to `CCHmac'
+/tmp/ccA2RGZs.o: In function `main':
+/home/lovingmag/Desktop/SGXBcftools-response-to-issue13/htslib-1.5/conftest.c:65: undefined reference to `CCHmac'
 collect2: error: ld returned 1 exit status
 configure:4484: $? = 1
 configure: failed program was:
@@ -398,8 +400,8 @@ configure: failed program was:
 configure:4484: result: no
 configure:4491: checking for library containing HMAC
 configure:4522: gcc -o conftest -g -O2   conftest.c -llzma -lbz2 -lz -lm  >&5
-/tmp/ccpkQvFF.o: In function `main':
-/home/lovingmag/Documents/SGXBcftools/htslib-1.5/conftest.c:42: undefined reference to `HMAC'
+/tmp/ccwr6fmv.o: In function `main':
+/home/lovingmag/Desktop/SGXBcftools-response-to-issue13/htslib-1.5/conftest.c:42: undefined reference to `HMAC'
 collect2: error: ld returned 1 exit status
 configure:4522: $? = 1
 configure: failed program was:

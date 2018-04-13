@@ -331,7 +331,7 @@ int ccall(call_t *call, bcf1_t *rec)
     int nals = rec->n_allele;
     call->nPLs = bcf_get_format_int32(call->hdr, rec, "PL", &call->PLs, &call->mPLs);
     if ( call->nPLs!=nsmpl*nals*(nals+1)/2 && call->nPLs!=nsmpl*nals )  // diploid+haploid or haploid only
-        error("Wrong number of PL fields? nals=%d npl=%d\n", nals,call->nPLs);
+        error("Wrong number of ccall PL fields? nals=%d npl=%d\n", nals,call->nPLs);
 
     // Convert PLs to probabilities, only first two alleles are considered
     int ngts = nals*(nals+1)/2;

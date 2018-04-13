@@ -41,6 +41,8 @@ PATH: /snap/bin
 PATH: /usr/lib/jvm/java-8-oracle/bin
 PATH: /usr/lib/jvm/java-8-oracle/db/bin
 PATH: /usr/lib/jvm/java-8-oracle/jre/bin
+PATH: /opt/intel/sgxsdk/bin
+PATH: /opt/intel/sgxsdk/bin/x64
 
 
 ## ----------- ##
@@ -121,8 +123,8 @@ configure:3217: checking shared library type
 configure:3236: result: plain .so
 configure:3249: checking for library containing dlopen
 configure:3280: gcc -o conftest -g -O2   conftest.c  >&5
-/tmp/cc7MS9dn.o: In function `main':
-/home/lovingmag/Documents/SGXBcftools/conftest.c:22: undefined reference to `dlopen'
+/tmp/cc66jiKX.o: In function `main':
+/home/lovingmag/Desktop/SGXBcftools-response-to-issue13/conftest.c:22: undefined reference to `dlopen'
 collect2: error: ld returned 1 exit status
 configure:3280: $? = 1
 configure: failed program was:
@@ -185,7 +187,7 @@ on lovingmage-GT72-6QD
 
 config.status:814: creating config.mk
 config.status:814: creating config.h
-configure:4958: === configuring in htslib-1.5 (/home/lovingmag/Documents/SGXBcftools/htslib-1.5)
+configure:4958: === configuring in htslib-1.5 (/home/lovingmag/Desktop/SGXBcftools-response-to-issue13/htslib-1.5)
 configure:5021: running /bin/bash ./configure --disable-option-checking '--prefix=/usr/local'  --cache-file=/dev/null --srcdir=.
 
 ## ---------------- ##

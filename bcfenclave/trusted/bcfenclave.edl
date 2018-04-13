@@ -31,6 +31,5 @@ enclave {
                                                 [in, string] char* outfile);
             public int ecall_bcfenclave_ccall(  [in, string] char* mlpfile,
                                                 [in, string] char* ccallfile);
-            public int ecall_bcfenclave_fwr();
     };
 };
