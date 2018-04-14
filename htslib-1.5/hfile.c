@@ -295,7 +295,7 @@ static ssize_t refill_buffer(hFILE *fp)
 #ifdef UNTRUSTED_MODE
 /*
  * Changes the buffer size for an hFILE.  Ideally this is done
- * immediately after openingchar*.  If performed later, this function may
+ * immediately after opening.  If performed later, this function may
  * fail if we are reducing the buffer size and the current offset into
  * the buffer is beyond the new capacity.
  *
@@ -385,7 +385,7 @@ char *hgets(char *buffer, int size, hFILE *fp)
 {
     if (size < 1) {
         fp->has_errno = errno = EINVAL;
-        return NULL;    //return r;
+        return NULL;
     }
     return hgetln(buffer, size, fp) > 0 ? buffer : NULL;
 }
@@ -796,7 +796,6 @@ static hFILE *hopen_fd(const char *filename, const char *mode)
     fp->is_socket = 0;
     fp->base.backend = &fd_backend;
     return &fp->base;
-while(1);
 error:
     if (fd >= 0) { int save = errno; (void) close(fd); errno = save; }
     hfile_destroy((hFILE *) fp);
