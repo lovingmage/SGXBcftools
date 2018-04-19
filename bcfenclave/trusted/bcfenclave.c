@@ -93,17 +93,3 @@ int ecall_bcfenclave_ccall(char* mlpfile, char* callfile)
 
   return 0;
 }
-
-int ecall_bcfenclave_fwr()
-{
-	char c[] = "this is tutorialspoint";
-	  char buffer[100];
-	  printf("==================================\n%s\n",c);
-	  const char* filename ="./f0";
-	  const char* mode ="w+";
-	  SGX_FILE* fc= sgx_fopen_auto_key(filename, mode);
-	  sgx_fwrite(c , 1 , sizeof(c) , fc );
-	  sgx_fclose(fc);
-	  printf("IN BCFENCLAVE 111\n");
-	  return 0;
-}
